@@ -12,36 +12,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const listaContactos = document.getElementById('listaContactos');
     const btnSubmit = document.getElementById('btnSubmit');
     const btnCancelar = document.getElementById('btnCancelar');
+    const inputBuscar = document.getElementById('inputBuscar'); // Nuevo: Campo de búsqueda
 
     // Referencias a los contenedores de error
     const errorNombre = document.getElementById('error-nombre');
     const errorTelefono = document.getElementById('error-telefono');
     const errorEmail = document.getElementById('error-email');
 
-    // Variable para saber si estamos editando y qué tarjeta estamos editando
+    // Variable para saber si estamos editando
     let contactoEnEdicion = null;
 
-    // Función para mostrar errores
+    // --- FUNCIONES DE UTILIDAD ---
+
     const mostrarError = (elementoError, mensaje) => {
         elementoError.textContent = mensaje;
     };
 
-    // Función para limpiar errores
     const limpiarErrores = () => {
         errorNombre.textContent = '';
         errorTelefono.textContent = '';
         errorEmail.textContent = '';
     };
 
-    // Función para verificar si la lista quedó vacía
     const verificarListaVacia = () => {
+        // Solo muestra el mensaje si no hay tarjetas en el DOM
         const tarjetas = listaContactos.querySelectorAll('.contacto-card');
         if (tarjetas.length === 0) {
             listaContactos.innerHTML = '<p>No hay contactos registrados.</p>';
         }
     };
 
-    // Función para salir del modo edición
     const salirModoEdicion = () => {
         contactoEnEdicion = null;
         formulario.reset();
@@ -49,29 +49,67 @@ document.addEventListener('DOMContentLoaded', () => {
         btnCancelar.style.display = 'none';
     };
 
-    // 2. Escuchar el evento 'submit' del formulario
+    // --- FUNCIÓN DE BÚSQUEDA EN TIEMPO REAL ---
+    const filtrarContactos = () => {
+        const textoBusqueda = inputBuscar.value.toLowerCase().trim();
+        const tarjetas = listaContactos.querySelectorAll('.contacto-card');
+        
+        let coincidencias = 0;
+
+        tarjetas.forEach(tarjeta => {
+            const nombreContacto = tarjeta.querySelector('h3').textContent.toLowerCase();
+            
+            if (nombreContacto.includes(textoBusqueda)) {
+                tarjeta.style.display = ''; // Mostrar tarjeta (restablece el display flex del CSS)
+                coincidencias++;
+            } else {
+                tarjeta.style.display = 'none'; // Ocultar tarjeta
+            }
+        });
+
+        // Gestionar el mensaje de "No hay contactos" o "No se encontraron"
+        const mensajeActual = listaContactos.querySelector('p');
+        if (coincidencias === 0) {
+            if (!mensajeActual) {
+                const p = document.createElement('p');
+                p.textContent = textoBusqueda === '' ? 'No hay contactos registrados.' : 'No se encontraron contactos.';
+                listaContactos.insertBefore(p, listaContactos.firstChild);
+            } else {
+                mensajeActual.textContent = textoBusqueda === '' ? 'No hay contactos registrados.' : 'No se encontraron contactos.';
+            }
+        } else {
+            // Si hay coincidencias, nos aseguramos de quitar el mensaje
+            if (mensajeActual) {
+                mensajeActual.remove();
+            }
+        }
+    };
+
+    // Escuchar el evento 'input' en la barra de búsqueda
+    inputBuscar.addEventListener('input', filtrarContactos);
+
+
+    // --- LÓGICA DEL FORMULARIO (AGREGAR / EDITAR) ---
+
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
         limpiarErrores();
 
         let esValido = true;
 
-        // 3. Capturar valores
         const nombre = inputNombre.value.trim();
         const telefono = inputTelefono.value.trim();
         const email = inputEmail.value.trim();
 
-        // --- VALIDACIONES ---
+        // Validaciones
         if (nombre === '') {
             mostrarError(errorNombre, 'El nombre es obligatorio.');
             esValido = false;
         }
-
         if (telefono === '') {
             mostrarError(errorTelefono, 'El teléfono es obligatorio.');
             esValido = false;
         }
-
         if (email === '') {
             mostrarError(errorEmail, 'El correo electrónico es obligatorio.');
             esValido = false;
@@ -85,15 +123,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!esValido) return;
 
-        // 4. Eliminar el mensaje de "No hay contactos" si es el primer registro
+        // Eliminar el mensaje de "No hay contactos" si es el primer registro
         const mensajeVacio = listaContactos.querySelector('p');
         if (mensajeVacio) {
             mensajeVacio.remove();
         }
 
-        // --- LÓGICA DE EDICIÓN O CREACIÓN ---
         if (contactoEnEdicion) {
-            // Si estamos editando, actualizamos los elementos existentes
+            // MODO EDICIÓN: Actualizar tarjeta existente
             contactoEnEdicion.querySelector('h3').textContent = nombre;
             const parrafos = contactoEnEdicion.querySelectorAll('p');
             parrafos[0].innerHTML = `<strong>Teléfono:</strong> ${telefono}`;
@@ -102,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
             salirModoEdicion();
             console.log("Contacto actualizado:", nombre);
         } else {
-            // Si no estamos editando, creamos una tarjeta nueva
+            // MODO CREACIÓN: Crear nueva tarjeta
             const tarjeta = document.createElement('div');
             tarjeta.classList.add('contacto-card');
 
@@ -115,62 +152,54 @@ document.addEventListener('DOMContentLoaded', () => {
             const parrafoEmail = document.createElement('p');
             parrafoEmail.innerHTML = `<strong>Correo:</strong> ${email}`;
 
-            // --- BOTÓN ELIMINAR ---
+            // Botón Eliminar
             const btnEliminar = document.createElement('button');
             btnEliminar.textContent = 'Eliminar';
             btnEliminar.classList.add('btn-eliminar');
             btnEliminar.addEventListener('click', () => {
                 tarjeta.remove();
                 verificarListaVacia();
-                // Si eliminamos el que estábamos editando, salimos del modo edición
-                if (contactoEnEdicion === tarjeta) {
-                    salirModoEdicion();
-                }
+                if (contactoEnEdicion === tarjeta) salirModoEdicion();
             });
 
-            // --- BOTÓN EDITAR ---
+            // Botón Editar
             const btnEditar = document.createElement('button');
             btnEditar.textContent = 'Editar';
             btnEditar.classList.add('btn-editar');
             btnEditar.addEventListener('click', () => {
-                // Cargar datos al formulario
                 inputNombre.value = nombre;
                 inputTelefono.value = telefono;
                 inputEmail.value = email;
                 
-                // Cambiar a modo edición
                 contactoEnEdicion = tarjeta;
                 btnSubmit.textContent = 'Guardar Cambios';
-                btnCancelar.style.display = 'inline-block'; // Mostrar botón cancelar
+                btnCancelar.style.display = 'inline-block';
                 inputNombre.focus();
-                
-                // Desplazar la pantalla hacia el formulario en móviles
                 formulario.scrollIntoView({ behavior: 'smooth' });
             });
 
-            // Ensamblar la tarjeta
+            // Ensamblar tarjeta
             tarjeta.appendChild(tituloNombre);
             tarjeta.appendChild(parrafoTelefono);
             tarjeta.appendChild(parrafoEmail);
             
-            // Contenedor para los botones
             const contenedorBotones = document.createElement('div');
             contenedorBotones.classList.add('acciones-tarjeta');
             contenedorBotones.appendChild(btnEditar);
             contenedorBotones.appendChild(btnEliminar);
             tarjeta.appendChild(contenedorBotones);
 
-            // Agregar la tarjeta al DOM
             listaContactos.appendChild(tarjeta);
 
-            // Limpiar el formulario
             formulario.reset();
             inputNombre.focus();
             console.log("Contacto agregado:", nombre);
         }
+
+        // Ejecutar el filtro por si acaso acabamos de agregar un contacto que no coincide con la búsqueda actual
+        filtrarContactos();
     });
 
-    // Evento para el botón Cancelar
     btnCancelar.addEventListener('click', salirModoEdicion);
 
 });

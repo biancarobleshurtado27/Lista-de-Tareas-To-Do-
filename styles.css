@@ -285,3 +285,24 @@ section h2 {
 .btn-eliminar {
     margin-top: 0; /* Quitamos el margin-top que tenía antes */
 }
+/* ============================================
+   ESTILOS PARA LA BARRA DE BÚSQUEDA
+   ============================================ */
+.barra-busqueda {
+    margin-bottom: 1.5rem;
+}
+
+.barra-busqueda input {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.barra-busqueda input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); /* Anillo de enfoque suave */
+}
