@@ -99,8 +99,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // 7. Agregar la tarjeta al DOM
         listaContactos.appendChild(tarjeta);
 
-        // 8. Limpiar el formulario
+        // 8. Limpiar el formulario automáticamente
         formulario.reset();
+        
+        // (Opcional) Poner el foco nuevamente en el campo nombre para agregar otro contacto rápido
+        inputNombre.focus();
+
         console.log("Contacto agregado exitosamente:", nombre);
     });
 
