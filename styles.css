@@ -286,14 +286,16 @@ section h2 {
     margin-top: 0; /* Quitamos el margin-top que tenía antes */
 }
 /* ============================================
-   ESTILOS PARA LA BARRA DE BÚSQUEDA
+   ESTILOS PARA LA BARRA DE BÚSQUEDA Y ORDENAR
    ============================================ */
 .barra-busqueda {
+    display: flex;
+    gap: 0.5rem; /* Espacio entre el input y el botón */
     margin-bottom: 1.5rem;
 }
 
 .barra-busqueda input {
-    width: 100%;
+    flex-grow: 1; /* El input ocupa todo el espacio disponible */
     padding: 0.7rem 1rem;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -304,5 +306,23 @@ section h2 {
 .barra-busqueda input:focus {
     outline: none;
     border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); /* Anillo de enfoque suave */
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+/* Botón Ordenar */
+.btn-ordenar {
+    background-color: #9b59b6; /* Morado para diferenciarlo */
+    color: white;
+    border: none;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap; /* Evita que el texto del botón se parta en dos líneas */
+    transition: background-color 0.2s ease;
+}
+
+.btn-ordenar:hover {
+    background-color: #8e44ad;
 }

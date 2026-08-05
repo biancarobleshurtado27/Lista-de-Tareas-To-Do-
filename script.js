@@ -13,11 +13,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSubmit = document.getElementById('btnSubmit');
     const btnCancelar = document.getElementById('btnCancelar');
     const inputBuscar = document.getElementById('inputBuscar'); // Nuevo: Campo de búsqueda
+    const btnOrdenar = document.getElementById('btnOrdenar'); // Nuevo: Botón ordenar
 
     // Referencias a los contenedores de error
     const errorNombre = document.getElementById('error-nombre');
     const errorTelefono = document.getElementById('error-telefono');
     const errorEmail = document.getElementById('error-email');
+
+    // --- FUNCIÓN DE ORDENAMIENTO ALFABÉTICO ---
+    btnOrdenar.addEventListener('click', () => {
+        // Obtener todas las tarjetas y convertirlas en un arreglo
+        const tarjetas = Array.from(listaContactos.querySelectorAll('.contacto-card'));
+        
+        // Ordenar el arreglo comparando el texto del elemento <h3> (Nombre)
+        tarjetas.sort((a, b) => {
+            const nombreA = a.querySelector('h3').textContent.toLowerCase();
+            const nombreB = b.querySelector('h3').textContent.toLowerCase();
+            return nombreA.localeCompare(nombreB); // localeCompare es ideal para ordenar texto ignorando acentos
+        });
+
+        // Volver a agregar las tarjetas al contenedor en el nuevo orden
+        // Nota: appendChild al mover un elemento existente simplemente lo reposiciona, no lo duplica
+        tarjetas.forEach(tarjeta => listaContactos.appendChild(tarjeta));
+        
+        // Opcional: Efecto visual rápido para notificar que se ordenó
+        btnOrdenar.textContent = '¡Ordenado!';
+        setTimeout(() => {
+            btnOrdenar.textContent = 'Ordenar A-Z';
+        }, 1000);
+    });
 
     // Variable para saber si estamos editando
     let contactoEnEdicion = null;
