@@ -1,0 +1,95 @@
+/* ============================================
+   HOJA DE ESTILOS - GESTOR DE CONTACTOS
+   ============================================ */
+
+/* Reseteo básico para márgenes y padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos globales del cuerpo */
+body {
+    /* Fuente moderna nativa del sistema */
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    
+    /* Fondo claro con un tono gris azulado muy sutil */
+    background-color: #f4f7f6; 
+    
+    /* Color de texto principal */
+    color: #333;
+    
+    /* Centrar el contenido vertical y horizontalmente */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+/* ============================================
+   ENCABEZADO
+   ============================================ */
+header {
+    width: 100%;
+    max-width: 600px; /* Limitar el ancho para coincidir con la tarjeta */
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+header h1 {
+    color: #2c3e50;
+    font-size: 2.2rem;
+    font-weight: 600;
+}
+
+/* ============================================
+   TARJETA PRINCIPAL (MAIN)
+   ============================================ */
+main {
+    /* Fondo blanco para destacar como tarjeta */
+    background-color: #ffffff;
+    
+    /* Ancho máximo y responsivo */
+    width: 100%;
+    max-width: 600px;
+    
+    /* Bordes redondeados */
+    border-radius: 16px;
+    
+    /* Sombra suave para dar efecto de elevación */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    
+    /* Espaciado interno */
+    padding: 2rem;
+}
+
+/* ============================================
+   SECCIÓN DE CONTACTOS
+   ============================================ */
+section h2 {
+    color: #34495e;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    /* Línea separadora sutil */
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 0.5rem;
+}
+
+/* Contenedor dinámico de la lista */
+#listaContactos {
+    text-align: center;
+    padding: 1rem 0;
+}
+
+/* Estilo del mensaje temporal "No hay contactos registrados." */
+#listaContactos p {
+    color: #95a5a6;
+    font-style: italic;
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    /* Borde discontinuo para indicar que es un estado vacío temporal */
+    border: 2px dashed #dce1e5; 
+}
