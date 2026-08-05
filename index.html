@@ -4,22 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestor de Contactos</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- 
+        ============================================
+        HOJA DE ESTILOS EXTERNA
+        ============================================
+        Actualmente vacía. Se utilizará posteriormente para:
+        - Diseño visual de la aplicación
+        - Estilos de tarjetas de contactos
+        - Diseño responsivo
+    -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- 
+        ============================================
+        ENCABEZADO PRINCIPAL
+        ============================================
+        Contiene el título identificativo de la aplicación
+    -->
     <header>
-        <h1>Gestor de Contactos / Y amistades</h1>
+        <h1>Gestor de Contactos</h1>
     </header>
-    
+
+    <!-- 
+        ============================================
+        CONTENEDOR PRINCIPAL
+        ============================================
+        Alberga toda la funcionalidad principal de la aplicación
+    -->
     <main>
-        <section aria-labelledby="titulo-lista">
-            <h2 id="titulo-lista">Lista de contactos</h2>
-            <div id="lista-contactos">
+        <!-- 
+            ============================================
+            SECCIÓN: LISTA DE CONTACTOS
+            ============================================
+            Muestra los contactos registrados en el sistema
+        -->
+        <section>
+            <h2>Lista de contactos</h2>
+            
+            <!-- 
+                CONTENEDOR DINÁMICO DE CONTACTOS
+                --------------------------------
+                Este div será poblado mediante JavaScript en futuras versiones.
+                Aquí se mostrarán las tarjetas con la información de cada contacto:
+                - Nombre
+                - Teléfono
+                - Email
+                - Acciones (editar/eliminar)
+            -->
+            <div id="listaContactos">
+                <!-- 
+                    MENSAJE DE ESTADO VACÍO
+                    --------------------------------
+                    Mensaje temporal que se muestra cuando no existen contactos.
+                    En futuras versiones, JavaScript controlará su visibilidad
+                    según el estado de la lista de contactos.
+                -->
                 <p>No hay contactos registrados.</p>
             </div>
         </section>
+
+        <!-- 
+            ============================================
+            ESPACIO RESERVADO PARA FUTURAS FUNCIONALIDADES
+            ============================================
+            En próximas versiones se agregarán aquí:
+            - Formulario para registrar nuevos contactos
+            - Botones de acción (agregar, editar, eliminar)
+            - Barra de búsqueda/filtrado
+            - Opciones de ordenamiento
+        -->
     </main>
 
+    <!-- 
+        ============================================
+        SCRIPT EXTERNO
+        ============================================
+        Actualmente vacío. Se utilizará posteriormente para:
+        - Agregar nuevos contactos
+        - Eliminar contactos existentes
+        - Editar información de contactos
+        - Buscar y filtrar contactos
+        - Persistencia de datos (localStorage)
+        - Renderizado dinámico del DOM
+    -->
     <script src="script.js"></script>
 </body>
 </html>
