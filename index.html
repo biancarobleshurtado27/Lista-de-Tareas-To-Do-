@@ -20,8 +20,6 @@
             ============================================
             SECCIÓN: FORMULARIO DE REGISTRO
             ============================================
-            Estructura lista para capturar datos.
-            Falta implementar el evento 'submit' en JavaScript.
         -->
         <section id="seccionFormulario">
             <h2>Registrar Nuevo Contacto</h2>
@@ -30,19 +28,22 @@
                 <!-- Campo: Nombre -->
                 <div class="campo-formulario">
                     <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre" placeholder="Ej: Juan Pérez" required>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ej: Juan Pérez">
+                    <span class="error-msg" id="error-nombre"></span>
                 </div>
 
                 <!-- Campo: Teléfono -->
                 <div class="campo-formulario">
                     <label for="telefono">Teléfono:</label>
-                    <input type="tel" id="telefono" name="telefono" placeholder="Ej: +34 600 123 456" required>
+                    <input type="tel" id="telefono" name="telefono" placeholder="Ej: +34 600 123 456">
+                    <span class="error-msg" id="error-telefono"></span>
                 </div>
 
                 <!-- Campo: Correo Electrónico -->
                 <div class="campo-formulario">
                     <label for="email">Correo Electrónico:</label>
-                    <input type="email" id="email" name="email" placeholder="Ej: correo@ejemplo.com" required>
+                    <input type="email" id="email" name="email" placeholder="Ej: correo@ejemplo.com">
+                    <span class="error-msg" id="error-email"></span>
                 </div>
 
                 <!-- Botón de envío -->

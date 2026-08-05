@@ -133,3 +133,55 @@ section h2 {
         width: 100%;
     }
 }
+/* ============================================
+   ESTILOS PARA LAS TARJETAS DE CONTACTO
+   ============================================ */
+.contacto-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-left: 5px solid #3498db; /* Borde azul de acento */
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.contacto-card:hover {
+    transform: translateY(-2px); /* Efecto de elevación al pasar el ratón */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.contacto-card h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.contacto-card p {
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+}
+/* ============================================
+   ESTILOS PARA VALIDACIÓN DE FORMULARIO
+   ============================================ */
+
+/* Asegurar que los inputs ocupen todo el ancho disponible */
+.campo-formulario input {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    margin-bottom: 0.3rem; /* Espacio entre el input y el posible mensaje de error */
+}
+
+/* Estilo del mensaje de error */
+.error-msg {
+    color: #e74c3c; /* Rojo */
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+    min-height: 1rem; /* Evita que la interfaz salte cuando aparece el error */
+}
