@@ -185,3 +185,29 @@ section h2 {
     display: block;
     min-height: 1rem; /* Evita que la interfaz salte cuando aparece el error */
 }
+/* ============================================
+   ESTILOS PARA EL BOTÓN ELIMINAR
+   ============================================ */
+.btn-eliminar {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    align-self: flex-start; /* Alinea el botón a la izquierda dentro de la tarjeta */
+}
+
+.btn-eliminar:hover {
+    background-color: #c0392b; /* Rojo más oscuro al pasar el ratón */
+}
+
+/* Asegurar que la tarjeta use flexbox para alinear el botón correctamente */
+.contacto-card {
+    display: flex;
+    flex-direction: column;
+}

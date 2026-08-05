@@ -28,10 +28,18 @@ document.addEventListener('DOMContentLoaded', () => {
         errorEmail.textContent = '';
     };
 
+    // Función para verificar si la lista quedó vacía
+    const verificarListaVacia = () => {
+        const tarjetas = listaContactos.querySelectorAll('.contacto-card');
+        if (tarjetas.length === 0) {
+            listaContactos.innerHTML = '<p>No hay contactos registrados.</p>';
+        }
+    };
+
     // 2. Escuchar el evento 'submit' del formulario
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
-        limpiarErrores(); // Limpiar errores previos antes de validar
+        limpiarErrores();
 
         let esValido = true;
 
@@ -41,25 +49,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = inputEmail.value.trim();
 
         // --- VALIDACIONES ---
-
-        // Validar Nombre (no vacío)
         if (nombre === '') {
             mostrarError(errorNombre, 'El nombre es obligatorio.');
             esValido = false;
         }
 
-        // Validar Teléfono (no vacío)
         if (telefono === '') {
             mostrarError(errorTelefono, 'El teléfono es obligatorio.');
             esValido = false;
         }
 
-        // Validar Email (no vacío y formato válido)
         if (email === '') {
             mostrarError(errorEmail, 'El correo electrónico es obligatorio.');
             esValido = false;
         } else {
-            // Expresión regular básica para validar formato de email
             const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!regexEmail.test(email)) {
                 mostrarError(errorEmail, 'Ingresa un formato de correo válido.');
@@ -67,10 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Si hay errores, detener la ejecución y no guardar el contacto
-        if (!esValido) {
-            return;
-        }
+        if (!esValido) return;
 
         // 4. Eliminar el mensaje de "No hay contactos" si es el primer registro
         const mensajeVacio = listaContactos.querySelector('p');
@@ -91,18 +91,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const parrafoEmail = document.createElement('p');
         parrafoEmail.innerHTML = `<strong>Correo:</strong> ${email}`;
 
+        // --- BOTÓN ELIMINAR ---
+        const btnEliminar = document.createElement('button');
+        btnEliminar.textContent = 'Eliminar';
+        btnEliminar.classList.add('btn-eliminar');
+        // Evento para eliminar la tarjeta actual
+        btnEliminar.addEventListener('click', () => {
+            tarjeta.remove(); // Elimina el div completo de la tarjeta
+            verificarListaVacia(); // Verifica si debemos mostrar el mensaje de vacío
+        });
+
         // 6. Ensamblar la tarjeta
         tarjeta.appendChild(tituloNombre);
         tarjeta.appendChild(parrafoTelefono);
         tarjeta.appendChild(parrafoEmail);
+        tarjeta.appendChild(btnEliminar); // Agregamos el botón a la tarjeta
 
         // 7. Agregar la tarjeta al DOM
         listaContactos.appendChild(tarjeta);
 
-        // 8. Limpiar el formulario automáticamente
+        // 8. Limpiar el formulario y enfocar el nombre
         formulario.reset();
-        
-        // (Opcional) Poner el foco nuevamente en el campo nombre para agregar otro contacto rápido
         inputNombre.focus();
 
         console.log("Contacto agregado exitosamente:", nombre);
