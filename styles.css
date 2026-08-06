@@ -206,10 +206,60 @@ section h2 {
     background-color: #c0392b; /* Rojo más oscuro al pasar el ratón */
 }
 
-/* Asegurar que la tarjeta use flexbox para alinear el botón correctamente */
+/* ============================================
+   ESTILOS PARA LAS TARJETAS DE CONTACTO
+   ============================================ */
 .contacto-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-left: 5px solid #3498db; /* Borde azul de acento */
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+    
+    /* Cambiamos a fila para poner el avatar a la izquierda */
+    display: flex; 
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem; /* Espacio entre avatar e info */
+}
+
+.contacto-card:hover {
+    transform: translateY(-2px); /* Efecto de elevación al pasar el ratón */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Contenedor del Avatar */
+.avatar-contacto {
+    background-color: #ecf0f1;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Evita que el avatar se deforme */
+    color: #bdc3c7; /* Color del ícono */
+}
+
+/* Contenedor de la información (nombre, teléfono, etc.) */
+.info-contacto {
+    flex-grow: 1; /* Ocupa el espacio restante */
     display: flex;
     flex-direction: column;
+}
+
+.info-contacto h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.info-contacto p {
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
 }
 /* ============================================
    ESTILOS PARA BOTONES DE ACCIÓN

@@ -57,10 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FUNCIÓN PRINCIPAL DE RENDERIZADO ---
     const renderizarContactos = () => {
         listaContactos.innerHTML = ''; // Limpiar la pantalla
-
-            // --- FUNCIÓN PRINCIPAL DE RENDERIZADO ---
-    const renderizarContactos = () => {
-        listaContactos.innerHTML = ''; // Limpiar la pantalla
         
         // Actualizar el contador total (siempre muestra el total real, ignorando el filtro de búsqueda)
         totalContactos.textContent = contactos.length;
@@ -86,13 +82,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const tarjeta = document.createElement('div');
             tarjeta.classList.add('contacto-card');
 
+            // Inyectamos el avatar SVG y envolvemos la info en un div
             tarjeta.innerHTML = `
-                <h3>${contacto.nombre}</h3>
-                <p><strong>Teléfono:</strong> ${contacto.telefono}</p>
-                <p><strong>Correo:</strong> ${contacto.email}</p>
-                <div class="acciones-tarjeta">
-                    <button class="btn-editar" data-id="${contacto.id}">Editar</button>
-                    <button class="btn-eliminar" data-id="${contacto.id}">Eliminar</button>
+                <div class="avatar-contacto">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                </div>
+                <div class="info-contacto">
+                    <h3>${contacto.nombre}</h3>
+                    <p><strong>Teléfono:</strong> ${contacto.telefono}</p>
+                    <p><strong>Correo:</strong> ${contacto.email}</p>
+                    <div class="acciones-tarjeta">
+                        <button class="btn-editar" data-id="${contacto.id}">Editar</button>
+                        <button class="btn-eliminar" data-id="${contacto.id}">Eliminar</button>
+                    </div>
                 </div>
             `;
 
@@ -211,4 +215,3 @@ document.addEventListener('DOMContentLoaded', () => {
     renderizarContactos();
 
 });
-// ya hice la 14
