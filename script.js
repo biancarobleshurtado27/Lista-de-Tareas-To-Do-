@@ -76,8 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const tarjeta = document.createElement('div');
             tarjeta.classList.add('contacto-card');
 
-            // Generar clase para el color de la insignia (badge)
             const claseCategoria = `categoria-${contacto.categoria.toLowerCase()}`;
+            const claseFavorito = contacto.esFavorito ? 'favorito-activo' : '';
 
             tarjeta.innerHTML = `
                 <div class="avatar-contacto">
@@ -86,8 +86,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     </svg>
                 </div>
                 <div class="info-contacto">
-                    <div class="badge-categoria ${claseCategoria}">${contacto.categoria}</div>
-                    <h3>${contacto.nombre}</h3>
+                    <div class="encabezado-tarjeta">
+                        <div>
+                            <div class="badge-categoria ${claseCategoria}">${contacto.categoria}</div>
+                            <h3>${contacto.nombre}</h3>
+                        </div>
+                        <button class="btn-favorito ${claseFavorito}" data-id="${contacto.id}" title="Marcar como favorito">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                            </svg>
+                        </button>
+                    </div>
                     <p><strong>Teléfono:</strong> ${contacto.telefono}</p>
                     <p><strong>Correo:</strong> ${contacto.email}</p>
                     <div class="acciones-tarjeta">
@@ -99,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tarjeta.querySelector('.btn-editar').addEventListener('click', () => iniciarEdicion(contacto.id));
             tarjeta.querySelector('.btn-eliminar').addEventListener('click', () => eliminarContacto(contacto.id));
+            tarjeta.querySelector('.btn-favorito').addEventListener('click', () => toggleFavorito(contacto.id));
 
             listaContactos.appendChild(tarjeta);
         });
@@ -135,6 +145,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (contactoEnEdicionId === id) {
             salirModoEdicion();
+        }
+    };
+
+    const toggleFavorito = (id) => {
+        const contacto = contactos.find(c => c.id === id);
+        if (contacto) {
+            contacto.esFavorito = !contacto.esFavorito; // Cambia el estado
+            guardarEnLocalStorage();
+            renderizarContactos();
         }
     };
 
@@ -188,18 +207,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!esValido) return;
 
         if (contactoEnEdicionId) {
+            // ACTUALIZAR EXISTENTE
             const index = contactos.findIndex(c => c.id === contactoEnEdicionId);
             if (index !== -1) {
-                contactos[index] = { id: contactoEnEdicionId, nombre, telefono, email, categoria };
+                // Mantenemos el estado de esFavorito que ya tenía
+                const esFavorito = contactos[index].esFavorito;
+                contactos[index] = { id: contactoEnEdicionId, nombre, telefono, email, categoria, esFavorito };
             }
             salirModoEdicion();
         } else {
+            // AGREGAR NUEVO
             const nuevoContacto = {
                 id: Date.now().toString(),
                 nombre,
                 telefono,
                 email,
-                categoria
+                categoria,
+                esFavorito: false // Nuevo contacto empieza sin ser favorito
             };
             contactos.push(nuevoContacto);
             formulario.reset();

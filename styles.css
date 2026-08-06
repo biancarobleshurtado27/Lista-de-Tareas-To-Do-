@@ -145,9 +145,17 @@ section h2 {
     flex-direction: column;
 }
 
+/* Nuevo contenedor para alinear el título y la estrella */
+.encabezado-tarjeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 0.3rem;
+}
+
 .info-contacto h3 {
     color: #2c3e50;
-    margin-bottom: 0.3rem;
     font-size: 1.2rem;
 }
 
@@ -177,6 +185,29 @@ section h2 {
 .categoria-trabajo { background-color: #3498db; } /* Azul */
 .categoria-amigos  { background-color: #f39c12; } /* Naranja */
 .categoria-otros   { background-color: #95a5a6; } /* Gris */
+
+/* ============================================
+   ESTILOS PARA EL BOTÓN FAVORITO (ESTRELLA)
+   ============================================ */
+.btn-favorito {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #bdc3c7; /* Gris por defecto */
+    transition: color 0.2s ease, transform 0.2s ease;
+    padding: 0;
+    margin-left: 1rem;
+    line-height: 1;
+}
+
+.btn-favorito:hover {
+    color: #f1c40f; /* Dorado al pasar el ratón */
+    transform: scale(1.1);
+}
+
+.btn-favorito.favorito-activo {
+    color: #f1c40f; /* Dorado */
+}
 
 /* ============================================
    ESTILOS PARA VALIDACIÓN DE FORMULARIO
