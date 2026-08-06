@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnVerTodos = $('#btnVerTodos');
     const totalContactos = $('#totalContactos');
     const btnTema = $('#btnTema');
+    const estadisticaTotal = $('#estadisticaTotal');
+    const estadisticaFavoritos = $('#estadisticaFavoritos');
+    const estadisticasCategorias = $('#estadisticasCategorias');
     const modalEditar = $('#modalEditar');
     const formularioEditar = $('#formularioEditar');
     const modalVerContacto = $('#modalVerContacto');
@@ -38,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.toggle('modo-oscuro', oscuro);
         btnTema.textContent = oscuro ? '☀ Modo claro' : '☾ Modo oscuro';
         btnTema.setAttribute('aria-label', oscuro ? 'Activar modo claro' : 'Activar modo oscuro');
+        btnTema.setAttribute('aria-pressed', String(oscuro));
     };
 
     const cargar = () => {
@@ -69,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderizarContactos = () => {
         listaContactos.replaceChildren();
         totalContactos.textContent = contactos.length;
+        renderizarEstadisticas();
         const busqueda = inputBuscar.value.trim().toLocaleLowerCase('es');
         const visibles = contactos
             .filter(c => c.nombre.toLocaleLowerCase('es').includes(busqueda))
@@ -85,9 +90,22 @@ document.addEventListener('DOMContentLoaded', () => {
         ultimoAgregadoId = null;
     };
 
+    const renderizarEstadisticas = () => {
+        const categorias = ['Familia', 'Trabajo', 'Amigos', 'Otros'];
+        estadisticaTotal.textContent = contactos.length;
+        estadisticaFavoritos.textContent = contactos.filter(c => c.esFavorito).length;
+        estadisticasCategorias.replaceChildren();
+        categorias.forEach(nombre => {
+            const item = document.createElement('li');
+            item.textContent = `${nombre}: ${contactos.filter(c => c.categoria === nombre).length}`;
+            estadisticasCategorias.appendChild(item);
+        });
+    };
+
     const crearTarjeta = (contacto) => {
         const tarjeta = document.createElement('article');
         tarjeta.className = `contacto-card${contacto.id === ultimoAgregadoId ? ' animacion-agregar' : ''}`;
+        tarjeta.setAttribute('role', 'listitem');
         const avatar = document.createElement('div'); avatar.className = 'avatar-contacto'; avatar.textContent = contacto.nombre.charAt(0).toUpperCase();
         const info = document.createElement('div'); info.className = 'info-contacto';
         const encabezado = document.createElement('div'); encabezado.className = 'encabezado-tarjeta';
@@ -96,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const nombre = document.createElement('h3'); nombre.textContent = contacto.nombre;
         datosTitulo.append(categoria, nombre);
         const favorito = crearBoton(contacto.esFavorito ? '★' : '☆', `btn-favorito${contacto.esFavorito ? ' favorito-activo' : ''}`, contacto.esFavorito ? 'Quitar de favoritos' : 'Marcar como favorito', () => toggleFavorito(contacto.id));
+        favorito.setAttribute('aria-pressed', String(contacto.esFavorito));
         encabezado.append(datosTitulo, favorito);
         const telefono = document.createElement('p'); telefono.innerHTML = '<strong>Teléfono:</strong> '; telefono.append(document.createTextNode(contacto.telefono));
         const email = document.createElement('p'); email.innerHTML = '<strong>Correo:</strong> '; email.append(document.createTextNode(contacto.email));
@@ -191,8 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btnFavoritos.classList.remove('active-filtro');
         renderizarContactos();
     });
-    btnFavoritos.addEventListener('click', () => { mostrandoSoloFavoritos = !mostrandoSoloFavoritos; btnFavoritos.textContent = mostrandoSoloFavoritos ? 'Ver todos' : 'Mostrar Favoritos'; btnFavoritos.classList.toggle('active-filtro', mostrandoSoloFavoritos); renderizarContactos(); });
-    btnOrdenar.addEventListener('click', () => { ordenAscendente = !ordenAscendente; btnOrdenar.textContent = ordenAscendente ? 'Ordenar A-Z' : 'Ordenar Z-A'; renderizarContactos(); });
+    btnFavoritos.addEventListener('click', () => { mostrandoSoloFavoritos = !mostrandoSoloFavoritos; btnFavoritos.textContent = mostrandoSoloFavoritos ? 'Ver todos' : 'Mostrar Favoritos'; btnFavoritos.classList.toggle('active-filtro', mostrandoSoloFavoritos); btnFavoritos.setAttribute('aria-pressed', String(mostrandoSoloFavoritos)); renderizarContactos(); });
+    btnOrdenar.addEventListener('click', () => { ordenAscendente = !ordenAscendente; btnOrdenar.textContent = ordenAscendente ? 'Ordenar A-Z' : 'Ordenar Z-A'; btnOrdenar.setAttribute('aria-label', ordenAscendente ? 'Ordenar contactos de A a Z' : 'Ordenar contactos de Z a A'); renderizarContactos(); });
     $('#btnCerrarModal').addEventListener('click', cerrarEditar); $('#btnCancelarEdicion').addEventListener('click', cerrarEditar);
     $('#btnCerrarDetalle').addEventListener('click', cerrarDetalle); $('#btnCerrarDetallePie').addEventListener('click', cerrarDetalle);
     $('#btnColgar').addEventListener('click', () => finalizarLlamada('Llamada cancelada', true));
@@ -202,6 +221,11 @@ document.addEventListener('DOMContentLoaded', () => {
         aplicarTema(tema);
     });
     [modalEditar, modalVerContacto].forEach(modal => modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); }));
+    document.addEventListener('keydown', e => {
+        if (e.key !== 'Escape') return;
+        cerrarEditar(); cerrarDetalle();
+        if (modalLlamada.classList.contains('active')) finalizarLlamada('Llamada cancelada', true);
+    });
     document.addEventListener('mousemove', e => {
         document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
         document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);

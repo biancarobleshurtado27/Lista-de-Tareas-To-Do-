@@ -83,16 +83,26 @@
         <section id="seccionLista">
             <h2>Lista de contactos</h2>
 
+            <section class="estadisticas" aria-labelledby="tituloEstadisticas">
+                <h3 id="tituloEstadisticas">Estadísticas</h3>
+                <div class="resumen-estadisticas" aria-live="polite" aria-atomic="true">
+                    <p>Total <strong id="estadisticaTotal">0</strong></p>
+                    <p>Favoritos <strong id="estadisticaFavoritos">0</strong></p>
+                </div>
+                <ul id="estadisticasCategorias" class="estadisticas-categorias" aria-label="Contactos por categoría"></ul>
+            </section>
+
             <!-- BARRA DE BÚSQUEDA Y FILTROS -->
             <div class="barra-busqueda">
-                <input type="text" id="inputBuscar" placeholder="Buscar por nombre...">
-                <button type="button" id="btnVerTodos" class="btn-ver-todos">Ver Todos</button>
-                <button type="button" id="btnFavoritos" class="btn-favoritos-filtro">Mostrar Favoritos</button>
-                <button type="button" id="btnOrdenar" class="btn-ordenar">Ordenar A-Z</button>
+                <label class="sr-only" for="inputBuscar">Buscar contacto por nombre</label>
+                <input type="search" id="inputBuscar" placeholder="Buscar por nombre..." aria-controls="listaContactos">
+                <button type="button" id="btnVerTodos" class="btn-ver-todos" aria-label="Mostrar todos los contactos">Ver Todos</button>
+                <button type="button" id="btnFavoritos" class="btn-favoritos-filtro" aria-pressed="false">Mostrar Favoritos</button>
+                <button type="button" id="btnOrdenar" class="btn-ordenar" aria-label="Ordenar contactos de A a Z">Ordenar A-Z</button>
             </div>
 
             <!-- CONTENEDOR DINÁMICO DE CONTACTOS -->
-            <div id="listaContactos">
+            <div id="listaContactos" role="list" aria-live="polite" aria-label="Contactos registrados">
                 <!-- Mensaje temporal de estado vacío -->
                 <p>No hay contactos registrados.</p>
             </div>
