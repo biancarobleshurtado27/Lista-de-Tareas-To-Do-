@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCancelar = document.getElementById('btnCancelar');
     const inputBuscar = document.getElementById('inputBuscar');
     const btnOrdenar = document.getElementById('btnOrdenar');
+    const totalContactos = document.getElementById('totalContactos');
 
     const errorNombre = document.getElementById('error-nombre');
     const errorTelefono = document.getElementById('error-telefono');
@@ -56,6 +57,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FUNCIÓN PRINCIPAL DE RENDERIZADO ---
     const renderizarContactos = () => {
         listaContactos.innerHTML = ''; // Limpiar la pantalla
+
+            // --- FUNCIÓN PRINCIPAL DE RENDERIZADO ---
+    const renderizarContactos = () => {
+        listaContactos.innerHTML = ''; // Limpiar la pantalla
+        
+        // Actualizar el contador total (siempre muestra el total real, ignorando el filtro de búsqueda)
+        totalContactos.textContent = contactos.length;
+
+        // Aplicar filtro de búsqueda
+        const textoBusqueda = inputBuscar.value.toLowerCase().trim();
+        // ... resto del código de la función ...
         
         // Aplicar filtro de búsqueda
         const textoBusqueda = inputBuscar.value.toLowerCase().trim();

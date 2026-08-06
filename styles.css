@@ -326,3 +326,21 @@ section h2 {
 .btn-ordenar:hover {
     background-color: #8e44ad;
 }
+/* ============================================
+   ESTILOS PARA EL CONTADOR DE CONTACTOS
+   ============================================ */
+.contador-contactos {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+#totalContactos {
+    background-color: #3498db;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
