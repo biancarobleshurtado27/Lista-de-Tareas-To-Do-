@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputNombre = document.getElementById('nombre');
     const inputTelefono = document.getElementById('telefono');
     const inputEmail = document.getElementById('email');
+    const selectCategoria = document.getElementById('categoria');
     const listaContactos = document.getElementById('listaContactos');
     const btnSubmit = document.getElementById('btnSubmit');
     const btnCancelar = document.getElementById('btnCancelar');
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorNombre = document.getElementById('error-nombre');
     const errorTelefono = document.getElementById('error-telefono');
     const errorEmail = document.getElementById('error-email');
+    const errorCategoria = document.getElementById('error-categoria');
 
     // 2. Estado de la aplicación
     let contactos = [];
@@ -45,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         errorNombre.textContent = '';
         errorTelefono.textContent = '';
         errorEmail.textContent = '';
+        errorCategoria.textContent = '';
     };
 
     const salirModoEdicion = () => {
@@ -73,6 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const tarjeta = document.createElement('div');
             tarjeta.classList.add('contacto-card');
 
+            // Generar clase para el color de la insignia (badge)
+            const claseCategoria = `categoria-${contacto.categoria.toLowerCase()}`;
+
             tarjeta.innerHTML = `
                 <div class="avatar-contacto">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
@@ -80,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </svg>
                 </div>
                 <div class="info-contacto">
+                    <div class="badge-categoria ${claseCategoria}">${contacto.categoria}</div>
                     <h3>${contacto.nombre}</h3>
                     <p><strong>Teléfono:</strong> ${contacto.telefono}</p>
                     <p><strong>Correo:</strong> ${contacto.email}</p>
@@ -106,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         inputNombre.value = contacto.nombre;
         inputTelefono.value = contacto.telefono;
         inputEmail.value = contacto.email;
+        selectCategoria.value = contacto.categoria;
         
         contactoEnEdicionId = id;
         btnSubmit.textContent = 'Guardar Cambios';
@@ -139,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const nombre = inputNombre.value.trim();
         const telefono = inputTelefono.value.trim();
         const email = inputEmail.value.trim();
+        const categoria = selectCategoria.value;
 
         // Validación Nombre
         if (nombre === '') { 
@@ -151,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarError(errorTelefono, 'El teléfono es obligatorio.'); 
             esValido = false; 
         } else {
-            // Regex para Costa Rica: Acepta +506 opcional, espacios o guiones, y exactamente 8 dígitos.
             const regexTelefonoCR = /^(\+?506[\s-]?)?\d{4}[\s-]?\d{4}$/;
             if (!regexTelefonoCR.test(telefono)) { 
                 mostrarError(errorTelefono, 'Formato inválido. Use 8 dígitos (Ej: 8888-8888 o +506 8888 8888).'); 
@@ -171,12 +179,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Validación Categoría
+        if (categoria === '') {
+            mostrarError(errorCategoria, 'Debes seleccionar una categoría.');
+            esValido = false;
+        }
+
         if (!esValido) return;
 
         if (contactoEnEdicionId) {
             const index = contactos.findIndex(c => c.id === contactoEnEdicionId);
             if (index !== -1) {
-                contactos[index] = { id: contactoEnEdicionId, nombre, telefono, email };
+                contactos[index] = { id: contactoEnEdicionId, nombre, telefono, email, categoria };
             }
             salirModoEdicion();
         } else {
@@ -184,7 +198,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 id: Date.now().toString(),
                 nombre,
                 telefono,
-                email
+                email,
+                categoria
             };
             contactos.push(nuevoContacto);
             formulario.reset();

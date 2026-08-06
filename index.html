@@ -49,6 +49,19 @@
                     <span class="error-msg" id="error-email"></span>
                 </div>
 
+                <!-- Campo: Categoría -->
+                <div class="campo-formulario">
+                    <label for="categoria">Categoría:</label>
+                    <select id="categoria" name="categoria">
+                        <option value="">Selecciona una categoría...</option>
+                        <option value="Familia">Familia</option>
+                        <option value="Trabajo">Trabajo</option>
+                        <option value="Amigos">Amigos</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                    <span class="error-msg" id="error-categoria"></span>
+                </div>
+
                 <!-- Botones de envío y cancelación -->
                 <div class="botones-formulario">
                     <button type="submit" id="btnSubmit">Agregar contacto</button>
@@ -61,7 +74,6 @@
             ============================================
             SECCIÓN: LISTA DE CONTACTOS
             ============================================
-            Muestra los contactos registrados en el sistema
         -->
         <section id="seccionLista">
             <h2>Lista de contactos</h2>
@@ -72,18 +84,12 @@
                 <button type="button" id="btnOrdenar" class="btn-ordenar">Ordenar A-Z</button>
             </div>
 
-            <!-- 
-                CONTENEDOR DINÁMICO DE CONTACTOS
-                Será poblado mediante JavaScript en futuras versiones.
-            -->
             <div id="listaContactos">
-                <!-- Mensaje temporal de estado vacío -->
                 <p>No hay contactos registrados.</p>
             </div>
         </section>
     </main>
 
-    <!-- Enlace al archivo JavaScript externo -->
     <script src="script.js"></script>
 </body>
 </html>

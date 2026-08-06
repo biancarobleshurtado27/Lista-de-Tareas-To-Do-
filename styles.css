@@ -2,16 +2,12 @@
    HOJA DE ESTILOS - GESTOR DE CONTACTOS (RESPONSIVE)
    ============================================ */
 
-/* Reseteo básico para márgenes y padding */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* ============================================
-   ESTILOS BASE (Mobile First)
-   ============================================ */
 body {
     font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background-color: #f4f7f6;
@@ -70,9 +66,6 @@ section h2 {
     width: 100%;
 }
 
-/* ============================================
-   MEDIA QUERIES (Tablet y Escritorio)
-   ============================================ */
 @media (min-width: 768px) {
     body {
         justify-content: center;
@@ -126,7 +119,7 @@ section h2 {
     flex-direction: row;
     align-items: flex-start;
     gap: 1rem;
-    width: 100%; /* Asegura que ocupe el espacio disponible en modo fila */
+    width: 100%;
 }
 
 .contacto-card:hover {
@@ -154,7 +147,7 @@ section h2 {
 
 .info-contacto h3 {
     color: #2c3e50;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
     font-size: 1.2rem;
 }
 
@@ -165,15 +158,37 @@ section h2 {
 }
 
 /* ============================================
+   ESTILOS PARA LAS INSIGNIAS (BADGES) DE CATEGORÍA
+   ============================================ */
+.badge-categoria {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: fit-content;
+}
+
+.categoria-familia { background-color: #2ecc71; } /* Verde */
+.categoria-trabajo { background-color: #3498db; } /* Azul */
+.categoria-amigos  { background-color: #f39c12; } /* Naranja */
+.categoria-otros   { background-color: #95a5a6; } /* Gris */
+
+/* ============================================
    ESTILOS PARA VALIDACIÓN DE FORMULARIO
    ============================================ */
-.campo-formulario input {
+.campo-formulario input, .campo-formulario select {
     width: 100%;
     padding: 0.6rem;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 1rem;
     margin-bottom: 0.3rem;
+    background-color: white;
 }
 
 .error-msg {
@@ -207,9 +222,7 @@ section h2 {
     transition: background-color 0.2s ease;
 }
 
-#btnSubmit:hover {
-    background-color: #27ae60;
-}
+#btnSubmit:hover { background-color: #27ae60; }
 
 .btn-cancelar {
     background-color: #95a5a6;
@@ -223,9 +236,7 @@ section h2 {
     transition: background-color 0.2s ease;
 }
 
-.btn-cancelar:hover {
-    background-color: #7f8c8d;
-}
+.btn-cancelar:hover { background-color: #7f8c8d; }
 
 .acciones-tarjeta {
     display: flex;
@@ -245,9 +256,7 @@ section h2 {
     transition: background-color 0.2s ease;
 }
 
-.btn-editar:hover {
-    background-color: #e67e22;
-}
+.btn-editar:hover { background-color: #e67e22; }
 
 .btn-eliminar {
     background-color: #e74c3c;
@@ -262,9 +271,7 @@ section h2 {
     margin-top: 0;
 }
 
-.btn-eliminar:hover {
-    background-color: #c0392b;
-}
+.btn-eliminar:hover { background-color: #c0392b; }
 
 /* ============================================
    ESTILOS PARA LA BARRA DE BÚSQUEDA Y ORDENAR
@@ -303,9 +310,7 @@ section h2 {
     transition: background-color 0.2s ease;
 }
 
-.btn-ordenar:hover {
-    background-color: #8e44ad;
-}
+.btn-ordenar:hover { background-color: #8e44ad; }
 
 /* ============================================
    ESTILOS PARA EL CONTADOR DE CONTACTOS
