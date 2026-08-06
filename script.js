@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorEmail = document.getElementById('error-email');
 
     // 2. Estado de la aplicación
-    let contactos = []; // Arreglo principal de contactos
-    let contactoEnEdicionId = null; // Guarda el ID del contacto que se edita
+    let contactos = [];
+    let contactoEnEdicionId = null;
 
     // --- FUNCIONES DE LOCALSTORAGE ---
     const guardarEnLocalStorage = () => {
@@ -56,20 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNCIÓN PRINCIPAL DE RENDERIZADO ---
     const renderizarContactos = () => {
-        listaContactos.innerHTML = ''; // Limpiar la pantalla
-        
-        // Actualizar el contador total (siempre muestra el total real, ignorando el filtro de búsqueda)
+        listaContactos.innerHTML = '';
         totalContactos.textContent = contactos.length;
 
-        // Aplicar filtro de búsqueda
-        const textoBusqueda = inputBuscar.value.toLowerCase().trim();
-        // ... resto del código de la función ...
-        
-        // Aplicar filtro de búsqueda
         const textoBusqueda = inputBuscar.value.toLowerCase().trim();
         const contactosFiltrados = contactos.filter(c => c.nombre.toLowerCase().includes(textoBusqueda));
 
-        // Mostrar mensaje si no hay contactos
         if (contactosFiltrados.length === 0) {
             const p = document.createElement('p');
             p.textContent = textoBusqueda === '' ? 'No hay contactos registrados.' : 'No se encontraron contactos.';
@@ -77,12 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Crear tarjetas para cada contacto
         contactosFiltrados.forEach(contacto => {
             const tarjeta = document.createElement('div');
             tarjeta.classList.add('contacto-card');
 
-            // Inyectamos el avatar SVG y envolvemos la info en un div
             tarjeta.innerHTML = `
                 <div class="avatar-contacto">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
@@ -100,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // Eventos de los botones
             tarjeta.querySelector('.btn-editar').addEventListener('click', () => iniciarEdicion(contacto.id));
             tarjeta.querySelector('.btn-eliminar').addEventListener('click', () => eliminarContacto(contacto.id));
 
@@ -108,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // --- FUNCIONES CRUD (Crear, Leer, Actualizar, Eliminar) ---
+    // --- FUNCIONES CRUD ---
     
     const iniciarEdicion = (id) => {
         const contacto = contactos.find(c => c.id === id);
@@ -125,25 +114,17 @@ document.addEventListener('DOMContentLoaded', () => {
         formulario.scrollIntoView({ behavior: 'smooth' });
     };
 
-       const eliminarContacto = (id) => {
-        // Buscar el contacto para obtener su nombre y mostrarlo en el mensaje
+    const eliminarContacto = (id) => {
         const contacto = contactos.find(c => c.id === id);
         const nombreContacto = contacto ? contacto.nombre : 'este contacto';
         
-        // Mostrar ventana de confirmación
         const confirmacion = confirm(`¿Estás seguro de que deseas eliminar a ${nombreContacto}?`);
-        
-        // Si el usuario presiona "Cancelar", detener la ejecución
-        if (!confirmacion) {
-            return;
-        }
+        if (!confirmacion) return;
 
-        // Si confirmó, proceder a eliminar
         contactos = contactos.filter(c => c.id !== id);
         guardarEnLocalStorage();
         renderizarContactos();
         
-        // Si se eliminó el que estábamos editando, cancelar la edición
         if (contactoEnEdicionId === id) {
             salirModoEdicion();
         }
@@ -159,28 +140,48 @@ document.addEventListener('DOMContentLoaded', () => {
         const telefono = inputTelefono.value.trim();
         const email = inputEmail.value.trim();
 
-        // Validaciones
-        if (nombre === '') { mostrarError(errorNombre, 'El nombre es obligatorio.'); esValido = false; }
-        if (telefono === '') { mostrarError(errorTelefono, 'El teléfono es obligatorio.'); esValido = false; }
-        if (email === '') { mostrarError(errorEmail, 'El correo electrónico es obligatorio.'); esValido = false; } 
-        else {
+        // Validación Nombre
+        if (nombre === '') { 
+            mostrarError(errorNombre, 'El nombre es obligatorio.'); 
+            esValido = false; 
+        }
+        
+        // Validación Teléfono Costa Rica
+        if (telefono === '') { 
+            mostrarError(errorTelefono, 'El teléfono es obligatorio.'); 
+            esValido = false; 
+        } else {
+            // Regex para Costa Rica: Acepta +506 opcional, espacios o guiones, y exactamente 8 dígitos.
+            const regexTelefonoCR = /^(\+?506[\s-]?)?\d{4}[\s-]?\d{4}$/;
+            if (!regexTelefonoCR.test(telefono)) { 
+                mostrarError(errorTelefono, 'Formato inválido. Use 8 dígitos (Ej: 8888-8888 o +506 8888 8888).'); 
+                esValido = false; 
+            }
+        }
+
+        // Validación Email
+        if (email === '') { 
+            mostrarError(errorEmail, 'El correo electrónico es obligatorio.'); 
+            esValido = false; 
+        } else {
             const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!regexEmail.test(email)) { mostrarError(errorEmail, 'Ingresa un formato de correo válido.'); esValido = false; }
+            if (!regexEmail.test(email)) { 
+                mostrarError(errorEmail, 'Ingresa un formato de correo válido.'); 
+                esValido = false; 
+            }
         }
 
         if (!esValido) return;
 
         if (contactoEnEdicionId) {
-            // ACTUALIZAR EXISTENTE
             const index = contactos.findIndex(c => c.id === contactoEnEdicionId);
             if (index !== -1) {
                 contactos[index] = { id: contactoEnEdicionId, nombre, telefono, email };
             }
             salirModoEdicion();
         } else {
-            // AGREGAR NUEVO
             const nuevoContacto = {
-                id: Date.now().toString(), // ID único basado en el tiempo
+                id: Date.now().toString(),
                 nombre,
                 telefono,
                 email
@@ -209,9 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnCancelar.addEventListener('click', salirModoEdicion);
 
     // --- INICIALIZACIÓN ---
-    // 1. Cargar datos guardados al iniciar la página
     cargarDeLocalStorage();
-    // 2. Dibujar los contactos en la pantalla
     renderizarContactos();
 
 });

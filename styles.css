@@ -11,25 +11,19 @@
 
 /* ============================================
    ESTILOS BASE (Mobile First)
-   Diseño optimizado para pantallas pequeñas primero
    ============================================ */
 body {
     font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background-color: #f4f7f6;
     color: #333;
-    
-    /* Uso de Flexbox para centrar el contenido */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Alineación al inicio para hacer scroll natural en móvil */
+    justify-content: flex-start;
     min-height: 100vh;
-    padding: 1rem; /* Espaciado reducido en móviles */
+    padding: 1rem;
 }
 
-/* ============================================
-   ENCABEZADO
-   ============================================ */
 header {
     width: 100%;
     text-align: center;
@@ -38,24 +32,18 @@ header {
 
 header h1 {
     color: #2c3e50;
-    font-size: 1.8rem; /* Tamaño de fuente más pequeño para móviles */
+    font-size: 1.8rem;
     font-weight: 600;
 }
 
-/* ============================================
-   TARJETA PRINCIPAL (MAIN)
-   ============================================ */
 main {
     background-color: #ffffff;
-    width: 100%; /* Ocupa todo el ancho disponible en móvil */
+    width: 100%;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    padding: 1.5rem; /* Espaciado interno cómodo para móvil */
+    padding: 1.5rem;
 }
 
-/* ============================================
-   SECCIÓN DE CONTACTOS
-   ============================================ */
 section h2 {
     color: #34495e;
     font-size: 1.3rem;
@@ -64,18 +52,13 @@ section h2 {
     padding-bottom: 0.5rem;
 }
 
-/* 
-   Contenedor dinámico de la lista.
-   Preparado con Flexbox para futuras tarjetas de contactos.
-*/
 #listaContactos {
     display: flex;
     flex-direction: column;
-    gap: 1rem; /* Espacio entre futuros elementos de contacto */
+    gap: 1rem;
     width: 100%;
 }
 
-/* Estilo del mensaje temporal "No hay contactos registrados." */
 #listaContactos p {
     color: #95a5a6;
     font-style: italic;
@@ -89,11 +72,10 @@ section h2 {
 
 /* ============================================
    MEDIA QUERIES (Tablet y Escritorio)
-   Ajustes para pantallas medianas y grandes
    ============================================ */
 @media (min-width: 768px) {
     body {
-        justify-content: center; /* Centra verticalmente en pantallas grandes */
+        justify-content: center;
         padding: 2rem;
     }
 
@@ -103,14 +85,14 @@ section h2 {
     }
 
     header h1 {
-        font-size: 2.5rem; /* Tipografía más grande en escritorio */
+        font-size: 2.5rem;
     }
 
     main {
-        max-width: 600px; /* Limita el ancho para mantener la legibilidad */
-        border-radius: 16px; /* Bordes más redondeados en escritorio */
-        padding: 2.5rem; /* Mayor respiración interna */
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada */
+        max-width: 600px;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     }
 
     section h2 {
@@ -118,93 +100,16 @@ section h2 {
         margin-bottom: 1.5rem;
     }
 
-    /* 
-       Preparación futura: En pantallas grandes, si hay muchos contactos, 
-       podrían disponerse en fila. Por ahora mantiene la columna.
-    */
     #listaContactos {
         flex-direction: row;
-        flex-wrap: wrap; /* Permite que los futuros contactos pasen a la siguiente línea */
+        flex-wrap: wrap;
         justify-content: space-between;
     }
 
-    /* El mensaje de vacío ocupará todo el ancho incluso en modo fila */
     #listaContactos p {
         width: 100%;
     }
 }
-/* ============================================
-   ESTILOS PARA LAS TARJETAS DE CONTACTO
-   ============================================ */
-.contacto-card {
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-left: 5px solid #3498db; /* Borde azul de acento */
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease;
-}
-
-.contacto-card:hover {
-    transform: translateY(-2px); /* Efecto de elevación al pasar el ratón */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-}
-
-.contacto-card h3 {
-    color: #2c3e50;
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
-}
-
-.contacto-card p {
-    color: #555;
-    font-size: 0.95rem;
-    margin-bottom: 0.25rem;
-}
-/* ============================================
-   ESTILOS PARA VALIDACIÓN DE FORMULARIO
-   ============================================ */
-
-/* Asegurar que los inputs ocupen todo el ancho disponible */
-.campo-formulario input {
-    width: 100%;
-    padding: 0.6rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1rem;
-    margin-bottom: 0.3rem; /* Espacio entre el input y el posible mensaje de error */
-}
-
-/* Estilo del mensaje de error */
-.error-msg {
-    color: #e74c3c; /* Rojo */
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-    display: block;
-    min-height: 1rem; /* Evita que la interfaz salte cuando aparece el error */
-}
-/* ============================================
-   ESTILOS PARA EL BOTÓN ELIMINAR
-   ============================================ */
-.btn-eliminar {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 0.8rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: background-color 0.2s ease;
-    align-self: flex-start; /* Alinea el botón a la izquierda dentro de la tarjeta */
-}
-
-.btn-eliminar:hover {
-    background-color: #c0392b; /* Rojo más oscuro al pasar el ratón */
-}
 
 /* ============================================
    ESTILOS PARA LAS TARJETAS DE CONTACTO
@@ -212,25 +117,23 @@ section h2 {
 .contacto-card {
     background-color: #fff;
     border: 1px solid #e0e0e0;
-    border-left: 5px solid #3498db; /* Borde azul de acento */
+    border-left: 5px solid #3498db;
     border-radius: 8px;
     padding: 1rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease;
-    
-    /* Cambiamos a fila para poner el avatar a la izquierda */
     display: flex; 
     flex-direction: row;
     align-items: flex-start;
-    gap: 1rem; /* Espacio entre avatar e info */
+    gap: 1rem;
+    width: 100%; /* Asegura que ocupe el espacio disponible en modo fila */
 }
 
 .contacto-card:hover {
-    transform: translateY(-2px); /* Efecto de elevación al pasar el ratón */
+    transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
-/* Contenedor del Avatar */
 .avatar-contacto {
     background-color: #ecf0f1;
     border-radius: 50%;
@@ -239,13 +142,12 @@ section h2 {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0; /* Evita que el avatar se deforme */
-    color: #bdc3c7; /* Color del ícono */
+    flex-shrink: 0;
+    color: #bdc3c7;
 }
 
-/* Contenedor de la información (nombre, teléfono, etc.) */
 .info-contacto {
-    flex-grow: 1; /* Ocupa el espacio restante */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
@@ -261,20 +163,39 @@ section h2 {
     font-size: 0.95rem;
     margin-bottom: 0.25rem;
 }
+
+/* ============================================
+   ESTILOS PARA VALIDACIÓN DE FORMULARIO
+   ============================================ */
+.campo-formulario input {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+}
+
+.error-msg {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+    min-height: 1rem;
+}
+
 /* ============================================
    ESTILOS PARA BOTONES DE ACCIÓN
    ============================================ */
-
-/* Contenedor de botones en el formulario */
 .botones-formulario {
     display: flex;
-    gap: 0.5rem; /* Espacio entre el botón de guardar y cancelar */
+    gap: 0.5rem;
     margin-top: 1rem;
 }
 
-/* Estilo general para botones de tipo submit */
 #btnSubmit {
-    background-color: #2ecc71; /* Verde para agregar/guardar */
+    background-color: #2ecc71;
     color: white;
     border: none;
     padding: 0.6rem 1rem;
@@ -282,7 +203,7 @@ section h2 {
     cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
-    flex-grow: 1; /* Ocupa el espacio disponible */
+    flex-grow: 1;
     transition: background-color 0.2s ease;
 }
 
@@ -290,7 +211,6 @@ section h2 {
     background-color: #27ae60;
 }
 
-/* Botón cancelar */
 .btn-cancelar {
     background-color: #95a5a6;
     color: white;
@@ -307,16 +227,14 @@ section h2 {
     background-color: #7f8c8d;
 }
 
-/* Contenedor de botones dentro de la tarjeta */
 .acciones-tarjeta {
     display: flex;
     gap: 0.5rem;
     margin-top: 0.8rem;
 }
 
-/* Estilo del botón Editar */
 .btn-editar {
-    background-color: #f39c12; /* Naranja/Amarillo para editar */
+    background-color: #f39c12;
     color: white;
     border: none;
     padding: 0.4rem 0.8rem;
@@ -331,21 +249,34 @@ section h2 {
     background-color: #e67e22;
 }
 
-/* Ajuste para que el botón eliminar y editar estén juntos */
 .btn-eliminar {
-    margin-top: 0; /* Quitamos el margin-top que tenía antes */
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    margin-top: 0;
 }
+
+.btn-eliminar:hover {
+    background-color: #c0392b;
+}
+
 /* ============================================
    ESTILOS PARA LA BARRA DE BÚSQUEDA Y ORDENAR
    ============================================ */
 .barra-busqueda {
     display: flex;
-    gap: 0.5rem; /* Espacio entre el input y el botón */
+    gap: 0.5rem;
     margin-bottom: 1.5rem;
 }
 
 .barra-busqueda input {
-    flex-grow: 1; /* El input ocupa todo el espacio disponible */
+    flex-grow: 1;
     padding: 0.7rem 1rem;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -359,9 +290,8 @@ section h2 {
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
 
-/* Botón Ordenar */
 .btn-ordenar {
-    background-color: #9b59b6; /* Morado para diferenciarlo */
+    background-color: #9b59b6;
     color: white;
     border: none;
     padding: 0.7rem 1rem;
@@ -369,13 +299,14 @@ section h2 {
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 600;
-    white-space: nowrap; /* Evita que el texto del botón se parta en dos líneas */
+    white-space: nowrap;
     transition: background-color 0.2s ease;
 }
 
 .btn-ordenar:hover {
     background-color: #8e44ad;
 }
+
 /* ============================================
    ESTILOS PARA EL CONTADOR DE CONTACTOS
    ============================================ */
