@@ -4,9 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestor de Contactos</title>
+    
+    <!-- Enlace a la hoja de estilos externa -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="fondo-interactivo" aria-hidden="true">
+        <span class="burbuja burbuja-1"></span>
+        <span class="burbuja burbuja-2"></span>
+        <span class="burbuja burbuja-3"></span>
+    </div>
+    <!-- ENCABEZADO PRINCIPAL -->
     <header>
         <h1>Gestor de Contactos</h1>
         <div class="contador-contactos">
@@ -14,26 +22,39 @@
         </div>
     </header>
 
+    <!-- CONTENEDOR PRINCIPAL -->
     <main>
-        <!-- SECCIÓN: FORMULARIO DE REGISTRO (Solo para agregar) -->
+        <!-- 
+            ============================================
+            SECCIÓN: FORMULARIO DE REGISTRO (Solo para agregar)
+            ============================================
+        -->
         <section id="seccionFormulario">
             <h2>Registrar Nuevo Contacto</h2>
+            
             <form id="formularioContacto">
+                <!-- Campo: Nombre -->
                 <div class="campo-formulario">
                     <label for="nombre">Nombre:</label>
                     <input type="text" id="nombre" placeholder="Ej: Juan Pérez">
                     <span class="error-msg" id="error-nombre"></span>
                 </div>
+
+                <!-- Campo: Teléfono -->
                 <div class="campo-formulario">
                     <label for="telefono">Teléfono:</label>
                     <input type="tel" id="telefono" placeholder="Ej: +506 8888-8888">
                     <span class="error-msg" id="error-telefono"></span>
                 </div>
+
+                <!-- Campo: Correo Electrónico -->
                 <div class="campo-formulario">
                     <label for="email">Correo Electrónico:</label>
                     <input type="email" id="email" placeholder="Ej: correo@ejemplo.com">
                     <span class="error-msg" id="error-email"></span>
                 </div>
+
+                <!-- Campo: Categoría -->
                 <div class="campo-formulario">
                     <label for="categoria">Categoría:</label>
                     <select id="categoria">
@@ -45,27 +66,43 @@
                     </select>
                     <span class="error-msg" id="error-categoria"></span>
                 </div>
+
+                <!-- Botón de envío -->
                 <div class="botones-formulario">
                     <button type="submit" id="btnSubmit">Agregar contacto</button>
                 </div>
             </form>
         </section>
 
-        <!-- SECCIÓN: LISTA DE CONTACTOS -->
+        <!-- 
+            ============================================
+            SECCIÓN: LISTA DE CONTACTOS
+            ============================================
+        -->
         <section id="seccionLista">
             <h2>Lista de contactos</h2>
+
+            <!-- BARRA DE BÚSQUEDA Y FILTROS -->
             <div class="barra-busqueda">
                 <input type="text" id="inputBuscar" placeholder="Buscar por nombre...">
+                <button type="button" id="btnVerTodos" class="btn-ver-todos">Ver Todos</button>
                 <button type="button" id="btnFavoritos" class="btn-favoritos-filtro">Mostrar Favoritos</button>
                 <button type="button" id="btnOrdenar" class="btn-ordenar">Ordenar A-Z</button>
             </div>
+
+            <!-- CONTENEDOR DINÁMICO DE CONTACTOS -->
             <div id="listaContactos">
+                <!-- Mensaje temporal de estado vacío -->
                 <p>No hay contactos registrados.</p>
             </div>
         </section>
     </main>
 
-    <!-- VENTANA MODAL PARA EDITAR (Oculta por defecto) -->
+    <!-- 
+        ============================================
+        VENTANA MODAL PARA EDITAR (Oculta por defecto)
+        ============================================
+    -->
     <div id="modalEditar" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -73,19 +110,24 @@
                 <button id="btnCerrarModal" class="btn-cerrar-modal">&times;</button>
             </div>
             <form id="formularioEditar">
+                <!-- ID oculto para saber qué contacto se está editando -->
                 <input type="hidden" id="editarId">
+                
                 <div class="campo-formulario">
                     <label for="editarNombre">Nombre:</label>
                     <input type="text" id="editarNombre" required>
                 </div>
+                
                 <div class="campo-formulario">
                     <label for="editarTelefono">Teléfono:</label>
-                    <input type="tel" id="editarTelefono" required>
+                    <input type="tel" id="editarTelefono" placeholder="Ej: +506 8888-8888" required>
                 </div>
+                
                 <div class="campo-formulario">
                     <label for="editarEmail">Correo Electrónico:</label>
                     <input type="email" id="editarEmail" required>
                 </div>
+                
                 <div class="campo-formulario">
                     <label for="editarCategoria">Categoría:</label>
                     <select id="editarCategoria" required>
@@ -95,7 +137,10 @@
                         <option value="Otros">Otros</option>
                     </select>
                 </div>
+                
+                <!-- Zona de errores para la modal -->
                 <span class="error-msg" id="error-editar"></span>
+                
                 <div class="botones-formulario">
                     <button type="submit" class="btn-submit-modal">Guardar Cambios</button>
                     <button type="button" id="btnCancelarEdicion" class="btn-cancelar">Cancelar</button>
@@ -104,6 +149,21 @@
         </div>
     </div>
 
+    <!-- VENTANA MODAL PARA VER LOS DETALLES DEL CONTACTO -->
+    <div id="modalVerContacto" class="modal-overlay" aria-hidden="true">
+        <div class="modal-content modal-detalle" role="dialog" aria-modal="true" aria-labelledby="tituloDetalle">
+            <div class="modal-header">
+                <h3 id="tituloDetalle">Detalle del contacto</h3>
+                <button id="btnCerrarDetalle" class="btn-cerrar-modal" type="button" aria-label="Cerrar">&times;</button>
+            </div>
+            <div id="detalleContacto" class="detalle-contacto"></div>
+            <div class="botones-formulario">
+                <button type="button" id="btnCerrarDetallePie" class="btn-cancelar">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enlace al archivo JavaScript externo -->
     <script src="script.js"></script>
 </body>
 </html>

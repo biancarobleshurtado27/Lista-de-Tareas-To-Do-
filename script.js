@@ -1,273 +1,174 @@
-// ============================================
-// SCRIPT - GESTOR DE CONTACTOS
-// ============================================
-
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // 1. Referencias al DOM (Formulario Principal)
-    const formulario = document.getElementById('formularioContacto');
-    const inputNombre = document.getElementById('nombre');
-    const inputTelefono = document.getElementById('telefono');
-    const inputEmail = document.getElementById('email');
-    const selectCategoria = document.getElementById('categoria');
-    
-    // Referencias Lista y Filtros
-    const listaContactos = document.getElementById('listaContactos');
-    const inputBuscar = document.getElementById('inputBuscar');
-    const btnOrdenar = document.getElementById('btnOrdenar');
-    const btnFavoritos = document.getElementById('btnFavoritos');
-    const totalContactos = document.getElementById('totalContactos');
+    const $ = (selector) => document.querySelector(selector);
+    const formulario = $('#formularioContacto');
+    const inputNombre = $('#nombre');
+    const inputTelefono = $('#telefono');
+    const inputEmail = $('#email');
+    const selectCategoria = $('#categoria');
+    const listaContactos = $('#listaContactos');
+    const inputBuscar = $('#inputBuscar');
+    const btnOrdenar = $('#btnOrdenar');
+    const btnFavoritos = $('#btnFavoritos');
+    const btnVerTodos = $('#btnVerTodos');
+    const totalContactos = $('#totalContactos');
+    const modalEditar = $('#modalEditar');
+    const formularioEditar = $('#formularioEditar');
+    const modalVerContacto = $('#modalVerContacto');
+    const detalleContacto = $('#detalleContacto');
 
-    // Referencias Errores Form Principal
-    const errorNombre = document.getElementById('error-nombre');
-    const errorTelefono = document.getElementById('error-telefono');
-    const errorEmail = document.getElementById('error-email');
-    const errorCategoria = document.getElementById('error-categoria');
-
-    // Referencias Modal de Edición
-    const modalEditar = document.getElementById('modalEditar');
-    const formularioEditar = document.getElementById('formularioEditar');
-    const btnCerrarModal = document.getElementById('btnCerrarModal');
-    const btnCancelarEdicion = document.getElementById('btnCancelarEdicion');
-    const editarId = document.getElementById('editarId');
-    const editarNombre = document.getElementById('editarNombre');
-    const editarTelefono = document.getElementById('editarTelefono');
-    const editarEmail = document.getElementById('editarEmail');
-    const editarCategoria = document.getElementById('editarCategoria');
-    const errorEditar = document.getElementById('error-editar');
-
-    // 2. Estado de la aplicación
     let contactos = [];
     let mostrandoSoloFavoritos = false;
+    let ordenAscendente = true;
+    let ultimoAgregadoId = null;
 
-    // --- FUNCIONES DE LOCALSTORAGE ---
-    const guardarEnLocalStorage = () => localStorage.setItem('contactos', JSON.stringify(contactos));
-    const cargarDeLocalStorage = () => {
-        const guardados = localStorage.getItem('contactos');
-        if (guardados) contactos = JSON.parse(guardados);
+    const errores = {
+        nombre: $('#error-nombre'), telefono: $('#error-telefono'), email: $('#error-email'),
+        categoria: $('#error-categoria'), editar: $('#error-editar')
     };
+    const telefonoValido = (telefono) => /^(\+?506[\s-]?)?\d{4}[\s-]?\d{4}$/.test(telefono);
+    const emailValido = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const limpiarErrores = () => Object.values(errores).forEach(error => error.textContent = '');
+    const guardar = () => localStorage.setItem('contactos', JSON.stringify(contactos));
 
-    // --- FUNCIONES DE UTILIDAD ---
-    const mostrarError = (elementoError, mensaje) => elementoError.textContent = mensaje;
-    const limpiarErrores = () => {
-        errorNombre.textContent = ''; errorTelefono.textContent = '';
-        errorEmail.textContent = ''; errorCategoria.textContent = '';
-        errorEditar.textContent = '';
-    };
-
-    // --- FUNCIÓN PRINCIPAL DE RENDERIZADO ---
-    const renderizarContactos = () => {
-        listaContactos.innerHTML = '';
-        totalContactos.textContent = contactos.length;
-
-        const textoBusqueda = inputBuscar.value.toLowerCase().trim();
-        let contactosFiltrados = contactos.filter(c => c.nombre.toLowerCase().includes(textoBusqueda));
-        
-        if (mostrandoSoloFavoritos) {
-            contactosFiltrados = contactosFiltrados.filter(c => c.esFavorito);
+    const cargar = () => {
+        try {
+            const guardados = JSON.parse(localStorage.getItem('contactos'));
+            contactos = Array.isArray(guardados) ? guardados
+                .filter(c => c && typeof c === 'object')
+                .map(c => ({
+                    ...c,
+                    id: String(c.id ?? Date.now()),
+                    nombre: String(c.nombre ?? ''),
+                    telefono: String(c.telefono ?? ''),
+                    email: String(c.email ?? ''),
+                    categoria: String(c.categoria || 'Otros'),
+                    esFavorito: Boolean(c.esFavorito)
+                })) : [];
+        } catch {
+            contactos = [];
         }
+    };
+    const porNombre = (a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }) * (ordenAscendente ? 1 : -1);
+    const crearBoton = (texto, clase, titulo, accion) => {
+        const boton = document.createElement('button');
+        boton.type = 'button'; boton.className = clase; boton.title = titulo; boton.setAttribute('aria-label', titulo);
+        boton.textContent = texto; boton.addEventListener('click', accion);
+        return boton;
+    };
 
-        if (contactosFiltrados.length === 0) {
-            const p = document.createElement('p');
-            let mensaje = 'No hay contactos registrados.';
-            if (textoBusqueda !== '') mensaje = 'No se encontraron contactos.';
-            else if (mostrandoSoloFavoritos) mensaje = 'No tienes contactos marcados como favoritos.';
-            p.textContent = mensaje;
-            listaContactos.appendChild(p);
+    const renderizarContactos = () => {
+        listaContactos.replaceChildren();
+        totalContactos.textContent = contactos.length;
+        const busqueda = inputBuscar.value.trim().toLocaleLowerCase('es');
+        const visibles = contactos
+            .filter(c => c.nombre.toLocaleLowerCase('es').includes(busqueda))
+            .filter(c => !mostrandoSoloFavoritos || c.esFavorito)
+            .sort(porNombre);
+
+        if (!visibles.length) {
+            const mensaje = document.createElement('p');
+            mensaje.textContent = busqueda ? 'No se encontraron contactos.' : mostrandoSoloFavoritos ? 'No tienes contactos marcados como favoritos.' : 'No hay contactos registrados.';
+            listaContactos.appendChild(mensaje);
             return;
         }
-
-        contactosFiltrados.forEach(contacto => {
-            const tarjeta = document.createElement('div');
-            tarjeta.classList.add('contacto-card');
-
-            const claseCategoria = `categoria-${contacto.categoria.toLowerCase()}`;
-            const claseFavorito = contacto.esFavorito ? 'favorito-activo' : '';
-
-            tarjeta.innerHTML = `
-                <div class="avatar-contacto">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                    </svg>
-                </div>
-                <div class="info-contacto">
-                    <div class="encabezado-tarjeta">
-                        <div>
-                            <div class="badge-categoria ${claseCategoria}">${contacto.categoria}</div>
-                            <h3>${contacto.nombre}</h3>
-                        </div>
-                        <button class="btn-favorito ${claseFavorito}" data-id="${contacto.id}" title="Marcar como favorito">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <p><strong>Teléfono:</strong> ${contacto.telefono}</p>
-                    <p><strong>Correo:</strong> ${contacto.email}</p>
-                    <div class="acciones-tarjeta">
-                        <button class="btn-editar" data-id="${contacto.id}">Editar</button>
-                        <button class="btn-eliminar" data-id="${contacto.id}">Eliminar</button>
-                    </div>
-                </div>
-            `;
-
-            tarjeta.querySelector('.btn-editar').addEventListener('click', () => abrirModalEditar(contacto.id));
-            tarjeta.querySelector('.btn-eliminar').addEventListener('click', () => eliminarContacto(contacto.id));
-            tarjeta.querySelector('.btn-favorito').addEventListener('click', () => toggleFavorito(contacto.id));
-
-            listaContactos.appendChild(tarjeta);
-        });
+        visibles.forEach(contacto => listaContactos.appendChild(crearTarjeta(contacto)));
+        ultimoAgregadoId = null;
     };
 
-    // --- FUNCIONES CRUD ---
-    
-    const abrirModalEditar = (id) => {
-        const contacto = contactos.find(c => c.id === id);
-        if (!contacto) return;
-
-        editarId.value = contacto.id;
-        editarNombre.value = contacto.nombre;
-        editarTelefono.value = contacto.telefono;
-        editarEmail.value = contacto.email;
-        editarCategoria.value = contacto.categoria;
-        
-        limpiarErrores();
-        modalEditar.classList.add('active');
-    };
-
-    const cerrarModalEditar = () => {
-        modalEditar.classList.remove('active');
-        formularioEditar.reset();
-    };
-
-    const eliminarContacto = (id) => {
-        const contacto = contactos.find(c => c.id === id);
-        const nombreContacto = contacto ? contacto.nombre : 'este contacto';
-        const confirmacion = confirm(`¿Estás seguro de que deseas eliminar a ${nombreContacto}?`);
-        if (!confirmacion) return;
-
-        contactos = contactos.filter(c => c.id !== id);
-        guardarEnLocalStorage();
-        renderizarContactos();
+    const crearTarjeta = (contacto) => {
+        const tarjeta = document.createElement('article');
+        tarjeta.className = `contacto-card${contacto.id === ultimoAgregadoId ? ' animacion-agregar' : ''}`;
+        const avatar = document.createElement('div'); avatar.className = 'avatar-contacto'; avatar.textContent = contacto.nombre.charAt(0).toUpperCase();
+        const info = document.createElement('div'); info.className = 'info-contacto';
+        const encabezado = document.createElement('div'); encabezado.className = 'encabezado-tarjeta';
+        const datosTitulo = document.createElement('div');
+        const categoria = document.createElement('span'); categoria.className = `badge-categoria categoria-${contacto.categoria.toLowerCase()}`; categoria.textContent = contacto.categoria;
+        const nombre = document.createElement('h3'); nombre.textContent = contacto.nombre;
+        datosTitulo.append(categoria, nombre);
+        const favorito = crearBoton(contacto.esFavorito ? '★' : '☆', `btn-favorito${contacto.esFavorito ? ' favorito-activo' : ''}`, contacto.esFavorito ? 'Quitar de favoritos' : 'Marcar como favorito', () => toggleFavorito(contacto.id));
+        encabezado.append(datosTitulo, favorito);
+        const telefono = document.createElement('p'); telefono.innerHTML = '<strong>Teléfono:</strong> '; telefono.append(document.createTextNode(contacto.telefono));
+        const email = document.createElement('p'); email.innerHTML = '<strong>Correo:</strong> '; email.append(document.createTextNode(contacto.email));
+        const acciones = document.createElement('div'); acciones.className = 'acciones-tarjeta';
+        const llamada = document.createElement('a'); llamada.className = 'btn-llamar'; llamada.href = `tel:${contacto.telefono.replace(/[^+\d]/g, '')}`; llamada.title = `Llamar a ${contacto.nombre}`; llamada.setAttribute('aria-label', `Llamar a ${contacto.nombre}`); llamada.textContent = '☎ Llamar';
+        acciones.append(
+            llamada,
+            crearBoton('Ver contacto', 'btn-ver', `Ver a ${contacto.nombre}`, () => verContacto(contacto.id)),
+            crearBoton('Editar', 'btn-editar', `Editar a ${contacto.nombre}`, () => abrirEditar(contacto.id)),
+            crearBoton('Eliminar', 'btn-eliminar', `Eliminar a ${contacto.nombre}`, () => eliminarContacto(contacto.id))
+        );
+        info.append(encabezado, telefono, email, acciones); tarjeta.append(avatar, info);
+        return tarjeta;
     };
 
     const toggleFavorito = (id) => {
-        const contacto = contactos.find(c => c.id === id);
-        if (contacto) {
-            contacto.esFavorito = !contacto.esFavorito; 
-            guardarEnLocalStorage();
-            renderizarContactos();
-        }
+        const contacto = contactos.find(c => c.id === String(id));
+        if (!contacto) return;
+        contacto.esFavorito = !contacto.esFavorito; guardar(); renderizarContactos();
+    };
+    const abrirEditar = (id) => {
+        const c = contactos.find(contacto => contacto.id === String(id)); if (!c) return;
+        $('#editarId').value = c.id; $('#editarNombre').value = c.nombre; $('#editarTelefono').value = c.telefono;
+        $('#editarEmail').value = c.email; $('#editarCategoria').value = c.categoria; limpiarErrores();
+        modalEditar.classList.add('active');
+    };
+    const cerrarEditar = () => { modalEditar.classList.remove('active'); formularioEditar.reset(); };
+    const verContacto = (id) => {
+        const c = contactos.find(contacto => contacto.id === String(id)); if (!c) return;
+        detalleContacto.replaceChildren();
+        const nombre = document.createElement('h4'); nombre.textContent = c.nombre;
+        const categoria = document.createElement('span'); categoria.className = `badge-categoria categoria-${c.categoria.toLowerCase()}`; categoria.textContent = c.categoria;
+        const tel = document.createElement('p'); tel.innerHTML = '<strong>Teléfono:</strong> '; const enlace = document.createElement('a'); enlace.href = `tel:${c.telefono.replace(/[^+\d]/g, '')}`; enlace.textContent = c.telefono; tel.append(enlace);
+        const correo = document.createElement('p'); correo.innerHTML = '<strong>Correo:</strong> '; correo.append(document.createTextNode(c.email));
+        detalleContacto.append(nombre, categoria, tel, correo); modalVerContacto.classList.add('active');
+    };
+    const cerrarDetalle = () => modalVerContacto.classList.remove('active');
+    const eliminarContacto = (id) => {
+        const c = contactos.find(contacto => contacto.id === String(id));
+        if (c && confirm(`¿Estás seguro de que deseas eliminar a ${c.nombre}?`)) { contactos = contactos.filter(contacto => contacto.id !== String(id)); guardar(); renderizarContactos(); }
     };
 
-    // --- EVENTO SUBMIT FORMULARIO PRINCIPAL (AGREGAR) ---
-    formulario.addEventListener('submit', (e) => {
-        e.preventDefault();
-        limpiarErrores();
-
-        let esValido = true;
-        const nombre = inputNombre.value.trim();
-        const telefono = inputTelefono.value.trim();
-        const email = inputEmail.value.trim();
-        const categoria = selectCategoria.value;
-
-        if (nombre === '') { mostrarError(errorNombre, 'El nombre es obligatorio.'); esValido = false; }
-        if (telefono === '') { mostrarError(errorTelefono, 'El teléfono es obligatorio.'); esValido = false; } 
-        else {
-            const regexTelefonoCR = /^(\+?506[\s-]?)?\d{4}[\s-]?\d{4}$/;
-            if (!regexTelefonoCR.test(telefono)) { mostrarError(errorTelefono, 'Formato inválido. Use 8 dígitos.'); esValido = false; }
-        }
-        if (email === '') { mostrarError(errorEmail, 'El correo es obligatorio.'); esValido = false; } 
-        else {
-            const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!regexEmail.test(email)) { mostrarError(errorEmail, 'Ingresa un formato de correo válido.'); esValido = false; }
-        }
-        if (categoria === '') { mostrarError(errorCategoria, 'Debes seleccionar una categoría.'); esValido = false; }
-
-        if (!esValido) return;
-
-        const nuevoContacto = {
-            id: Date.now().toString(),
-            nombre, telefono, email, categoria,
-            esFavorito: false 
-        };
-        contactos.push(nuevoContacto);
-        
-        guardarEnLocalStorage();
-        renderizarContactos();
-        formulario.reset();
-        inputNombre.focus();
+    formulario.addEventListener('submit', (evento) => {
+        evento.preventDefault(); limpiarErrores();
+        const nombre = inputNombre.value.trim(), telefono = inputTelefono.value.trim(), email = inputEmail.value.trim(), categoria = selectCategoria.value;
+        let valido = true;
+        if (!nombre) { errores.nombre.textContent = 'El nombre es obligatorio.'; valido = false; }
+        if (!telefono) { errores.telefono.textContent = 'El teléfono es obligatorio.'; valido = false; } else if (!telefonoValido(telefono)) { errores.telefono.textContent = 'Formato inválido. Usa 8 dígitos.'; valido = false; }
+        if (!email) { errores.email.textContent = 'El correo es obligatorio.'; valido = false; } else if (!emailValido(email)) { errores.email.textContent = 'Ingresa un correo válido.'; valido = false; }
+        if (!categoria) { errores.categoria.textContent = 'Debes seleccionar una categoría.'; valido = false; }
+        if (!valido) return;
+        const nuevo = { id: String(Date.now()), nombre, telefono, email, categoria, esFavorito: false };
+        contactos.push(nuevo); ultimoAgregadoId = nuevo.id; guardar(); formulario.reset(); inputNombre.focus(); renderizarContactos();
     });
 
-    // --- EVENTO SUBMIT MODAL (EDITAR) ---
-    formularioEditar.addEventListener('submit', (e) => {
-        e.preventDefault();
-        limpiarErrores();
-
-        let esValido = true;
-        const id = editarId.value;
-        const nombre = editarNombre.value.trim();
-        const telefono = editarTelefono.value.trim();
-        const email = editarEmail.value.trim();
-        const categoria = editarCategoria.value;
-
-        if (nombre === '' || telefono === '' || email === '') {
-            mostrarError(errorEditar, 'Todos los campos son obligatorios.');
-            esValido = false;
-        }
-        const regexTelefonoCR = /^(\+?506[\s-]?)?\d{4}[\s-]?\d{4}$/;
-        if (telefono !== '' && !regexTelefonoCR.test(telefono)) {
-            mostrarError(errorEditar, 'Formato de teléfono inválido. Use 8 dígitos.');
-            esValido = false;
-        }
-
-        if (!esValido) return;
-
-        const index = contactos.findIndex(c => c.id === id);
-        if (index !== -1) {
-            // Mantener el estado de favorito
-            const esFavorito = contactos[index].esFavorito;
-            contactos[index] = { id, nombre, telefono, email, categoria, esFavorito };
-        }
-
-        guardarEnLocalStorage();
-        renderizarContactos();
-        cerrarModalEditar();
+    formularioEditar.addEventListener('submit', (evento) => {
+        evento.preventDefault(); limpiarErrores();
+        const id = $('#editarId').value, nombre = $('#editarNombre').value.trim(), telefono = $('#editarTelefono').value.trim(), email = $('#editarEmail').value.trim(), categoria = $('#editarCategoria').value;
+        if (!nombre || !telefono || !email || !categoria) { errores.editar.textContent = 'Todos los campos son obligatorios.'; return; }
+        if (!telefonoValido(telefono)) { errores.editar.textContent = 'Formato de teléfono inválido. Usa 8 dígitos.'; return; }
+        if (!emailValido(email)) { errores.editar.textContent = 'Ingresa un correo válido.'; return; }
+        const indice = contactos.findIndex(c => c.id === id);
+        if (indice >= 0) contactos[indice] = { ...contactos[indice], nombre, telefono, email, categoria };
+        guardar(); cerrarEditar(); renderizarContactos();
     });
 
-    // --- EVENTOS DE FILTROS, BÚSQUEDA Y MODAL ---
     inputBuscar.addEventListener('input', renderizarContactos);
-
-    btnFavoritos.addEventListener('click', () => {
-        mostrandoSoloFavoritos = !mostrandoSoloFavoritos;
-        if (mostrandoSoloFavoritos) {
-            btnFavoritos.textContent = 'Ver Todos';
-            btnFavoritos.classList.add('active-filtro');
-        } else {
-            btnFavoritos.textContent = 'Mostrar Favoritos';
-            btnFavoritos.classList.remove('active-filtro');
-        }
+    btnVerTodos.addEventListener('click', () => {
+        cargar(); // Recupera también los contactos guardados antes de abrir la página.
+        inputBuscar.value = '';
+        mostrandoSoloFavoritos = false;
+        btnFavoritos.textContent = 'Mostrar Favoritos';
+        btnFavoritos.classList.remove('active-filtro');
         renderizarContactos();
     });
-
-    btnOrdenar.addEventListener('click', () => {
-        contactos.sort((a, b) => a.nombre.toLowerCase().localeCompare(b.nombre.toLowerCase()));
-        guardarEnLocalStorage();
-        renderizarContactos();
-        btnOrdenar.textContent = '¡Ordenado!';
-        setTimeout(() => { btnOrdenar.textContent = 'Ordenar A-Z'; }, 1000);
+    btnFavoritos.addEventListener('click', () => { mostrandoSoloFavoritos = !mostrandoSoloFavoritos; btnFavoritos.textContent = mostrandoSoloFavoritos ? 'Ver todos' : 'Mostrar Favoritos'; btnFavoritos.classList.toggle('active-filtro', mostrandoSoloFavoritos); renderizarContactos(); });
+    btnOrdenar.addEventListener('click', () => { ordenAscendente = !ordenAscendente; btnOrdenar.textContent = ordenAscendente ? 'Ordenar A-Z' : 'Ordenar Z-A'; renderizarContactos(); });
+    $('#btnCerrarModal').addEventListener('click', cerrarEditar); $('#btnCancelarEdicion').addEventListener('click', cerrarEditar);
+    $('#btnCerrarDetalle').addEventListener('click', cerrarDetalle); $('#btnCerrarDetallePie').addEventListener('click', cerrarDetalle);
+    [modalEditar, modalVerContacto].forEach(modal => modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); }));
+    document.addEventListener('mousemove', e => {
+        document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+        document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
     });
-
-    btnCerrarModal.addEventListener('click', cerrarModalEditar);
-    btnCancelarEdicion.addEventListener('click', cerrarModalEditar);
-
-    // Cerrar modal si se hace clic fuera de la tarjeta
-    modalEditar.addEventListener('click', (e) => {
-        if (e.target === modalEditar) cerrarModalEditar();
-    });
-
-    // --- INICIALIZACIÓN ---
-    cargarDeLocalStorage();
-    renderizarContactos();
-
+    cargar(); renderizarContactos();
 });

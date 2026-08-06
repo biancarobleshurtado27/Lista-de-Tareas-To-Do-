@@ -9,14 +9,29 @@
 
 body {
     font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f4f7f6;
+    background: #eaf3ff;
     color: #333;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
     padding: 1rem;
+    position: relative;
+    overflow-x: hidden;
 }
+
+.fondo-interactivo {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background: radial-gradient(480px circle at var(--mouse-x, 50%) var(--mouse-y, 30%), rgba(116, 192, 252, .45), transparent 65%), linear-gradient(135deg, #eef8ff, #e9f9f2 55%, #f5efff);
+}
+.burbuja { position: absolute; display: block; border-radius: 50%; filter: blur(2px); opacity: .55; animation: flotar 14s ease-in-out infinite alternate; }
+.burbuja-1 { width: 230px; height: 230px; top: 8%; left: 5%; background: #8ed1fc; }
+.burbuja-2 { width: 170px; height: 170px; right: 8%; top: 42%; background: #b9fbc0; animation-delay: -5s; }
+.burbuja-3 { width: 260px; height: 260px; left: 42%; bottom: -110px; background: #d8b4fe; animation-delay: -9s; }
+@keyframes flotar { to { transform: translate(45px, -28px) scale(1.12); } }
 
 header {
     width: 100%;
@@ -32,7 +47,8 @@ header h1 {
 }
 
 main {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, .92);
+    backdrop-filter: blur(8px);
     width: 100%;
     max-width: 600px;
     border-radius: 12px;
@@ -54,7 +70,7 @@ section h2 {
    ============================================ */
 #listaContactos {
     display: flex;
-    flex-direction: column; /* Corregido a columna para evitar errores de visualización */
+    flex-direction: column;
     gap: 1rem;
     width: 100%;
 }
@@ -77,7 +93,7 @@ section h2 {
     border-radius: 8px;
     padding: 1rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
     display: flex; 
     flex-direction: row;
     align-items: flex-start;
@@ -99,7 +115,9 @@ section h2 {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: #bdc3c7;
+    color: #3976a6;
+    font-size: 1.35rem;
+    font-weight: 700;
 }
 
 .info-contacto {
@@ -205,7 +223,7 @@ section h2 {
     margin-top: 0.8rem;
 }
 
-.btn-editar {
+.btn-editar, .btn-ver, .btn-llamar {
     background-color: #f39c12;
     color: white;
     border: none;
@@ -216,6 +234,11 @@ section h2 {
     font-weight: 600;
 }
 .btn-editar:hover { background-color: #e67e22; }
+
+.btn-ver { background-color: #3498db; }
+.btn-ver:hover { background-color: #2980b9; }
+.btn-llamar { background-color: #2ecc71; text-decoration: none; }
+.btn-llamar:hover { background-color: #27ae60; }
 
 .btn-eliminar {
     background-color: #e74c3c;
@@ -252,6 +275,21 @@ section h2 {
     border-color: #3498db;
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
+
+/* Nuevo: Botón Ver Todos */
+.btn-ver-todos {
+    background-color: #1abc9c; /* Cyan/Turquesa */
+    color: white;
+    border: none;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+}
+.btn-ver-todos:hover { background-color: #16a085; }
 
 .btn-ordenar {
     background-color: #9b59b6;
@@ -308,7 +346,7 @@ section h2 {
    VENTANA MODAL (EDITAR)
    ============================================ */
 .modal-overlay {
-    display: none; /* Oculto por defecto */
+    display: none; 
     position: fixed;
     top: 0;
     left: 0;
@@ -322,7 +360,7 @@ section h2 {
 }
 
 .modal-overlay.active {
-    display: flex; /* Visible */
+    display: flex; 
 }
 
 .modal-content {
@@ -361,3 +399,37 @@ section h2 {
     line-height: 1;
 }
 .btn-cerrar-modal:hover { color: #e74c3c; }
+
+/* ============================================
+   ANIMACIONES DE TARJETAS (AGREGAR, EDITAR, ELIMINAR)
+   ============================================ */
+
+@keyframes animacion-agregar {
+    0% { transform: translateY(-20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+.animacion-agregar {
+    animation: animacion-agregar 0.4s ease-out;
+}
+
+@keyframes animacion-editar {
+    0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+    50% { box-shadow: 0 0 15px 5px rgba(46, 204, 113, 0.5); transform: scale(1.01); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+}
+.animacion-editar {
+    animation: animacion-editar 0.8s ease-in-out;
+}
+
+@keyframes animacion-eliminar {
+    0% { transform: translateX(0); opacity: 1; }
+    100% { transform: translateX(100%); opacity: 0; }
+}
+.animacion-eliminar {
+    animation: animacion-eliminar 0.4s ease-in forwards;
+    pointer-events: none;
+}
+
+.detalle-contacto h4 { color: #2c3e50; font-size: 1.35rem; margin-bottom: .6rem; }
+.detalle-contacto p { color: #555; margin-top: .65rem; }
+.detalle-contacto a { color: #2678b8; font-weight: 600; }
