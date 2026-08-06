@@ -109,12 +109,25 @@ document.addEventListener('DOMContentLoaded', () => {
         formulario.scrollIntoView({ behavior: 'smooth' });
     };
 
-    const eliminarContacto = (id) => {
+       const eliminarContacto = (id) => {
+        // Buscar el contacto para obtener su nombre y mostrarlo en el mensaje
+        const contacto = contactos.find(c => c.id === id);
+        const nombreContacto = contacto ? contacto.nombre : 'este contacto';
+        
+        // Mostrar ventana de confirmación
+        const confirmacion = confirm(`¿Estás seguro de que deseas eliminar a ${nombreContacto}?`);
+        
+        // Si el usuario presiona "Cancelar", detener la ejecución
+        if (!confirmacion) {
+            return;
+        }
+
+        // Si confirmó, proceder a eliminar
         contactos = contactos.filter(c => c.id !== id);
         guardarEnLocalStorage();
         renderizarContactos();
         
-        // Si se eliminó el que estábamos editando, cancelar edición
+        // Si se eliminó el que estábamos editando, cancelar la edición
         if (contactoEnEdicionId === id) {
             salirModoEdicion();
         }
@@ -186,3 +199,4 @@ document.addEventListener('DOMContentLoaded', () => {
     renderizarContactos();
 
 });
+// ya hice la 14
