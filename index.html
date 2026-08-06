@@ -20,6 +20,7 @@
         <div class="contador-contactos">
             Total de contactos: <span id="totalContactos">0</span>
         </div>
+        <button id="btnTema" class="btn-tema" type="button" aria-label="Activar modo oscuro">☾ Modo oscuro</button>
     </header>
 
     <!-- CONTENEDOR PRINCIPAL -->
@@ -160,6 +161,18 @@
             <div class="botones-formulario">
                 <button type="button" id="btnCerrarDetallePie" class="btn-cancelar">Cerrar</button>
             </div>
+        </div>
+    </div>
+
+    <!-- VISTA DE LLAMADA SIMULADA -->
+    <div id="modalLlamada" class="modal-overlay modal-llamada" aria-hidden="true">
+        <div class="pantalla-llamada" role="dialog" aria-modal="true" aria-labelledby="nombreLlamada">
+            <div id="avatarLlamada" class="avatar-llamada"></div>
+            <p class="etiqueta-llamada">Llamando a</p>
+            <h3 id="nombreLlamada"></h3>
+            <p id="telefonoLlamada" class="telefono-llamada"></p>
+            <p id="estadoLlamada" class="estado-llamada">Sonando<span></span></p>
+            <button id="btnColgar" class="btn-colgar" type="button" aria-label="Colgar llamada" title="Colgar llamada">☎</button>
         </div>
     </div>
 

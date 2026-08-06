@@ -11,15 +11,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnFavoritos = $('#btnFavoritos');
     const btnVerTodos = $('#btnVerTodos');
     const totalContactos = $('#totalContactos');
+    const btnTema = $('#btnTema');
     const modalEditar = $('#modalEditar');
     const formularioEditar = $('#formularioEditar');
     const modalVerContacto = $('#modalVerContacto');
     const detalleContacto = $('#detalleContacto');
+    const modalLlamada = $('#modalLlamada');
 
     let contactos = [];
     let mostrandoSoloFavoritos = false;
     let ordenAscendente = true;
     let ultimoAgregadoId = null;
+    let temporizadorLlamada = null;
+    let temporizadorCierreLlamada = null;
 
     const errores = {
         nombre: $('#error-nombre'), telefono: $('#error-telefono'), email: $('#error-email'),
@@ -29,6 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const emailValido = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const limpiarErrores = () => Object.values(errores).forEach(error => error.textContent = '');
     const guardar = () => localStorage.setItem('contactos', JSON.stringify(contactos));
+    const aplicarTema = (tema) => {
+        const oscuro = tema === 'oscuro';
+        document.body.classList.toggle('modo-oscuro', oscuro);
+        btnTema.textContent = oscuro ? '☀ Modo claro' : '☾ Modo oscuro';
+        btnTema.setAttribute('aria-label', oscuro ? 'Activar modo claro' : 'Activar modo oscuro');
+    };
 
     const cargar = () => {
         try {
@@ -90,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const telefono = document.createElement('p'); telefono.innerHTML = '<strong>Teléfono:</strong> '; telefono.append(document.createTextNode(contacto.telefono));
         const email = document.createElement('p'); email.innerHTML = '<strong>Correo:</strong> '; email.append(document.createTextNode(contacto.email));
         const acciones = document.createElement('div'); acciones.className = 'acciones-tarjeta';
-        const llamada = document.createElement('a'); llamada.className = 'btn-llamar'; llamada.href = `tel:${contacto.telefono.replace(/[^+\d]/g, '')}`; llamada.title = `Llamar a ${contacto.nombre}`; llamada.setAttribute('aria-label', `Llamar a ${contacto.nombre}`); llamada.textContent = '☎ Llamar';
+        const llamada = crearBoton('☎ Llamar', 'btn-llamar', `Llamar a ${contacto.nombre}`, () => iniciarLlamada(contacto));
         acciones.append(
             llamada,
             crearBoton('Ver contacto', 'btn-ver', `Ver a ${contacto.nombre}`, () => verContacto(contacto.id)),
@@ -123,6 +133,26 @@ document.addEventListener('DOMContentLoaded', () => {
         detalleContacto.append(nombre, categoria, tel, correo); modalVerContacto.classList.add('active');
     };
     const cerrarDetalle = () => modalVerContacto.classList.remove('active');
+    const iniciarLlamada = (contacto) => {
+        clearTimeout(temporizadorLlamada);
+        clearTimeout(temporizadorCierreLlamada);
+        $('#avatarLlamada').textContent = contacto.nombre.charAt(0).toUpperCase();
+        $('#nombreLlamada').textContent = contacto.nombre;
+        $('#telefonoLlamada').textContent = contacto.telefono;
+        $('#estadoLlamada').innerHTML = 'Sonando<span></span>';
+        modalLlamada.classList.remove('llamada-finalizada');
+        modalLlamada.classList.add('active');
+        temporizadorLlamada = setTimeout(() => finalizarLlamada('Llamada finalizada'), 5000);
+    };
+    const finalizarLlamada = (mensaje = 'Llamada cancelada', cerrarDeInmediato = false) => {
+        clearTimeout(temporizadorLlamada);
+        clearTimeout(temporizadorCierreLlamada);
+        $('#estadoLlamada').textContent = mensaje;
+        modalLlamada.classList.add('llamada-finalizada');
+        temporizadorCierreLlamada = setTimeout(() => {
+            modalLlamada.classList.remove('active', 'llamada-finalizada');
+        }, cerrarDeInmediato ? 0 : 2200);
+    };
     const eliminarContacto = (id) => {
         const c = contactos.find(contacto => contacto.id === String(id));
         if (c && confirm(`¿Estás seguro de que deseas eliminar a ${c.nombre}?`)) { contactos = contactos.filter(contacto => contacto.id !== String(id)); guardar(); renderizarContactos(); }
@@ -165,10 +195,17 @@ document.addEventListener('DOMContentLoaded', () => {
     btnOrdenar.addEventListener('click', () => { ordenAscendente = !ordenAscendente; btnOrdenar.textContent = ordenAscendente ? 'Ordenar A-Z' : 'Ordenar Z-A'; renderizarContactos(); });
     $('#btnCerrarModal').addEventListener('click', cerrarEditar); $('#btnCancelarEdicion').addEventListener('click', cerrarEditar);
     $('#btnCerrarDetalle').addEventListener('click', cerrarDetalle); $('#btnCerrarDetallePie').addEventListener('click', cerrarDetalle);
+    $('#btnColgar').addEventListener('click', () => finalizarLlamada('Llamada cancelada', true));
+    btnTema.addEventListener('click', () => {
+        const tema = document.body.classList.contains('modo-oscuro') ? 'claro' : 'oscuro';
+        localStorage.setItem('tema-contactos', tema);
+        aplicarTema(tema);
+    });
     [modalEditar, modalVerContacto].forEach(modal => modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); }));
     document.addEventListener('mousemove', e => {
         document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
         document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
     });
+    aplicarTema(localStorage.getItem('tema-contactos') || 'claro');
     cargar(); renderizarContactos();
 });
