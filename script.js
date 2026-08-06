@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCancelar = document.getElementById('btnCancelar');
     const inputBuscar = document.getElementById('inputBuscar');
     const btnOrdenar = document.getElementById('btnOrdenar');
+    const btnFavoritos = document.getElementById('btnFavoritos');
     const totalContactos = document.getElementById('totalContactos');
 
     const errorNombre = document.getElementById('error-nombre');
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Estado de la aplicación
     let contactos = [];
     let contactoEnEdicionId = null;
+    let mostrandoSoloFavoritos = false; // Nuevo: Estado del filtro de favoritos
 
     // --- FUNCIONES DE LOCALSTORAGE ---
     const guardarEnLocalStorage = () => {
@@ -63,15 +65,30 @@ document.addEventListener('DOMContentLoaded', () => {
         totalContactos.textContent = contactos.length;
 
         const textoBusqueda = inputBuscar.value.toLowerCase().trim();
-        const contactosFiltrados = contactos.filter(c => c.nombre.toLowerCase().includes(textoBusqueda));
+        
+        // Filtrar por nombre
+        let contactosFiltrados = contactos.filter(c => c.nombre.toLowerCase().includes(textoBusqueda));
+        
+        // Filtrar por favoritos si el toggle está activo
+        if (mostrandoSoloFavoritos) {
+            contactosFiltrados = contactosFiltrados.filter(c => c.esFavorito);
+        }
 
+        // Mostrar mensaje si no hay contactos
         if (contactosFiltrados.length === 0) {
             const p = document.createElement('p');
-            p.textContent = textoBusqueda === '' ? 'No hay contactos registrados.' : 'No se encontraron contactos.';
+            let mensaje = 'No hay contactos registrados.';
+            if (textoBusqueda !== '') {
+                mensaje = 'No se encontraron contactos.';
+            } else if (mostrandoSoloFavoritos) {
+                mensaje = 'No tienes contactos marcados como favoritos.';
+            }
+            p.textContent = mensaje;
             listaContactos.appendChild(p);
             return;
         }
 
+        // Crear tarjetas
         contactosFiltrados.forEach(contacto => {
             const tarjeta = document.createElement('div');
             tarjeta.classList.add('contacto-card');
@@ -151,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleFavorito = (id) => {
         const contacto = contactos.find(c => c.id === id);
         if (contacto) {
-            contacto.esFavorito = !contacto.esFavorito; // Cambia el estado
+            contacto.esFavorito = !contacto.esFavorito; 
             guardarEnLocalStorage();
             renderizarContactos();
         }
@@ -210,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // ACTUALIZAR EXISTENTE
             const index = contactos.findIndex(c => c.id === contactoEnEdicionId);
             if (index !== -1) {
-                // Mantenemos el estado de esFavorito que ya tenía
                 const esFavorito = contactos[index].esFavorito;
                 contactos[index] = { id: contactoEnEdicionId, nombre, telefono, email, categoria, esFavorito };
             }
@@ -223,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 telefono,
                 email,
                 categoria,
-                esFavorito: false // Nuevo contacto empieza sin ser favorito
+                esFavorito: false 
             };
             contactos.push(nuevoContacto);
             formulario.reset();
@@ -234,8 +250,23 @@ document.addEventListener('DOMContentLoaded', () => {
         renderizarContactos();
     });
 
-    // --- EVENTOS DE BÚSQUEDA Y ORDENAMIENTO ---
+    // --- EVENTOS DE FILTROS, BÚSQUEDA Y ORDENAMIENTO ---
+    
     inputBuscar.addEventListener('input', renderizarContactos);
+
+    btnFavoritos.addEventListener('click', () => {
+        mostrandoSoloFavoritos = !mostrandoSoloFavoritos;
+        
+        if (mostrandoSoloFavoritos) {
+            btnFavoritos.textContent = 'Ver Todos';
+            btnFavoritos.classList.add('active-filtro');
+        } else {
+            btnFavoritos.textContent = 'Mostrar Favoritos';
+            btnFavoritos.classList.remove('active-filtro');
+        }
+        
+        renderizarContactos();
+    });
 
     btnOrdenar.addEventListener('click', () => {
         contactos.sort((a, b) => a.nombre.toLowerCase().localeCompare(b.nombre.toLowerCase()));
