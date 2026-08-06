@@ -1,7 +1,6 @@
 /* ============================================
-   HOJA DE ESTILOS - GESTOR DE CONTACTOS (RESPONSIVE)
+   ESTILOS GLOBALES Y BASE
    ============================================ */
-
 * {
     margin: 0;
     padding: 0;
@@ -15,13 +14,13 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
     min-height: 100vh;
     padding: 1rem;
 }
 
 header {
     width: 100%;
+    max-width: 600px;
     text-align: center;
     margin-bottom: 1rem;
 }
@@ -35,9 +34,11 @@ header h1 {
 main {
     background-color: #ffffff;
     width: 100%;
+    max-width: 600px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     padding: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 section h2 {
@@ -48,9 +49,12 @@ section h2 {
     padding-bottom: 0.5rem;
 }
 
+/* ============================================
+   LISTA DE CONTACTOS Y TARJETAS
+   ============================================ */
 #listaContactos {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Corregido a columna para evitar errores de visualización */
     gap: 1rem;
     width: 100%;
 }
@@ -66,47 +70,6 @@ section h2 {
     width: 100%;
 }
 
-@media (min-width: 768px) {
-    body {
-        justify-content: center;
-        padding: 2rem;
-    }
-
-    header {
-        max-width: 600px;
-        margin-bottom: 1.5rem;
-    }
-
-    header h1 {
-        font-size: 2.5rem;
-    }
-
-    main {
-        max-width: 600px;
-        border-radius: 16px;
-        padding: 2.5rem;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    }
-
-    section h2 {
-        font-size: 1.6rem;
-        margin-bottom: 1.5rem;
-    }
-
-    #listaContactos {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-
-    #listaContactos p {
-        width: 100%;
-    }
-}
-
-/* ============================================
-   ESTILOS PARA LAS TARJETAS DE CONTACTO
-   ============================================ */
 .contacto-card {
     background-color: #fff;
     border: 1px solid #e0e0e0;
@@ -164,9 +127,6 @@ section h2 {
     margin-bottom: 0.25rem;
 }
 
-/* ============================================
-   ESTILOS PARA LAS INSIGNIAS (BADGES) DE CATEGORÍA
-   ============================================ */
 .badge-categoria {
     display: inline-block;
     padding: 0.2rem 0.6rem;
@@ -176,7 +136,6 @@ section h2 {
     color: white;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
     width: fit-content;
 }
 
@@ -186,30 +145,7 @@ section h2 {
 .categoria-otros   { background-color: #95a5a6; } 
 
 /* ============================================
-   ESTILOS PARA EL BOTÓN FAVORITO (ESTRELLA)
-   ============================================ */
-.btn-favorito {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #bdc3c7; 
-    transition: color 0.2s ease, transform 0.2s ease;
-    padding: 0;
-    margin-left: 1rem;
-    line-height: 1;
-}
-
-.btn-favorito:hover {
-    color: #f1c40f; 
-    transform: scale(1.1);
-}
-
-.btn-favorito.favorito-activo {
-    color: #f1c40f; 
-}
-
-/* ============================================
-   ESTILOS PARA VALIDACIÓN DE FORMULARIO
+   FORMULARIOS Y BOTONES
    ============================================ */
 .campo-formulario input, .campo-formulario select {
     width: 100%;
@@ -230,16 +166,13 @@ section h2 {
     min-height: 1rem;
 }
 
-/* ============================================
-   ESTILOS PARA BOTONES DE ACCIÓN
-   ============================================ */
 .botones-formulario {
     display: flex;
     gap: 0.5rem;
     margin-top: 1rem;
 }
 
-#btnSubmit {
+#btnSubmit, .btn-submit-modal {
     background-color: #2ecc71;
     color: white;
     border: none;
@@ -251,8 +184,7 @@ section h2 {
     flex-grow: 1;
     transition: background-color 0.2s ease;
 }
-
-#btnSubmit:hover { background-color: #27ae60; }
+#btnSubmit:hover, .btn-submit-modal:hover { background-color: #27ae60; }
 
 .btn-cancelar {
     background-color: #95a5a6;
@@ -265,7 +197,6 @@ section h2 {
     font-weight: 600;
     transition: background-color 0.2s ease;
 }
-
 .btn-cancelar:hover { background-color: #7f8c8d; }
 
 .acciones-tarjeta {
@@ -283,9 +214,7 @@ section h2 {
     cursor: pointer;
     font-size: 0.85rem;
     font-weight: 600;
-    transition: background-color 0.2s ease;
 }
-
 .btn-editar:hover { background-color: #e67e22; }
 
 .btn-eliminar {
@@ -297,32 +226,27 @@ section h2 {
     cursor: pointer;
     font-size: 0.85rem;
     font-weight: 600;
-    transition: background-color 0.2s ease;
-    margin-top: 0;
 }
-
 .btn-eliminar:hover { background-color: #c0392b; }
 
 /* ============================================
-   ESTILOS PARA LA BARRA DE BÚSQUEDA Y FILTROS
+   BARRA DE BÚSQUEDA Y FILTROS
    ============================================ */
 .barra-busqueda {
     display: flex;
-    flex-wrap: wrap; /* Permite que los botones bajen de línea en móvil */
+    flex-wrap: wrap;
     gap: 0.5rem;
     margin-bottom: 1.5rem;
 }
 
 .barra-busqueda input {
     flex-grow: 1;
-    min-width: 150px; /* Evita que el input se contraiga demasiado */
+    min-width: 150px;
     padding: 0.7rem 1rem;
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 1rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-
 .barra-busqueda input:focus {
     outline: none;
     border-color: #3498db;
@@ -339,12 +263,9 @@ section h2 {
     font-size: 0.9rem;
     font-weight: 600;
     white-space: nowrap;
-    transition: background-color 0.2s ease;
 }
-
 .btn-ordenar:hover { background-color: #8e44ad; }
 
-/* Botón Mostrar Favoritos */
 .btn-favoritos-filtro {
     background-color: #f1c40f;
     color: #2c3e50;
@@ -355,28 +276,25 @@ section h2 {
     font-size: 0.9rem;
     font-weight: 600;
     white-space: nowrap;
-    transition: background-color 0.2s ease, color 0.2s ease;
 }
+.btn-favoritos-filtro:hover { background-color: #f0b30f; }
+.btn-favoritos-filtro.active-filtro { background-color: #e67e22; color: white; }
 
-.btn-favoritos-filtro:hover { 
-    background-color: #f0b30f; 
+/* Botón Estrella (Favorito) en tarjeta */
+.btn-favorito {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #bdc3c7; 
+    transition: color 0.2s ease, transform 0.2s ease;
+    margin-left: 1rem;
+    line-height: 1;
 }
+.btn-favorito:hover { color: #f1c40f; transform: scale(1.1); }
+.btn-favorito.favorito-activo { color: #f1c40f; }
 
-.btn-favoritos-filtro.active-filtro {
-    background-color: #e67e22;
-    color: white;
-}
-
-/* ============================================
-   ESTILOS PARA EL CONTADOR DE CONTACTOS
-   ============================================ */
-.contador-contactos {
-    margin-top: 0.5rem;
-    font-size: 1rem;
-    color: #7f8c8d;
-    font-weight: 500;
-}
-
+/* Contador */
+.contador-contactos { margin-top: 0.5rem; font-size: 1rem; color: #7f8c8d; }
 #totalContactos {
     background-color: #3498db;
     color: white;
@@ -385,3 +303,61 @@ section h2 {
     font-weight: bold;
     font-size: 0.9rem;
 }
+
+/* ============================================
+   VENTANA MODAL (EDITAR)
+   ============================================ */
+.modal-overlay {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modal-overlay.active {
+    display: flex; /* Visible */
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-header h3 {
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.btn-cerrar-modal {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #95a5a6;
+    cursor: pointer;
+    line-height: 1;
+}
+.btn-cerrar-modal:hover { color: #e74c3c; }
